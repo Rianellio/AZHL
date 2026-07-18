@@ -31,9 +31,11 @@ pnpm install
 # Start local Postgres
 docker compose up -d
 
-# Configure environment
-cp .env.example .env
-# edit .env if your local Postgres differs from the docker-compose defaults
+# Configure environment — Next.js and Prisma each auto-load .env from their OWN directory,
+# not the monorepo root, so create both (see .env.example for the full list of keys):
+cp .env.example packages/database/.env   # only needs DATABASE_URL
+cp .env.example apps/web/.env
+# edit both if your local Postgres differs from the docker-compose defaults
 
 # Apply migrations and seed realistic Phase 1 data
 pnpm db:migrate
