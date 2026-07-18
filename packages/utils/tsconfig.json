@@ -1,0 +1,7 @@
+{
+  "extends": "@azhl/config/tsconfig/base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["src"]
+}

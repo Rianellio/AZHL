@@ -1,0 +1,62 @@
+@import "tailwindcss";
+@source "../../../../packages/ui/src";
+
+/*
+ * Design tokens — see .claude/design-system.md for full rationale and contrast ratios.
+ * All pairs are verified WCAG AA (text >=4.5:1 normal / >=3:1 large-or-UI-component).
+ */
+@theme {
+  --color-surface-base: #0a0b0d;
+  --color-surface-raised: #131417;
+  --color-surface-overlay: #1b1d21;
+  --color-surface-hover: #202226;
+  --color-border-subtle: #2a2d33;
+  --color-border-strong: #3a3e46;
+
+  --color-foreground-primary: #f5f7fa;
+  --color-foreground-secondary: #a8aeb8;
+  --color-foreground-tertiary: #6b7180;
+
+  --color-accent: #2f8fff;
+  --color-accent-hover: #5ca8ff;
+  --color-accent-muted: #1c3a5e;
+  --color-accent-tint: #b9dbff;
+
+  --color-live: #ff3b45;
+  --color-live-muted: #3d1418;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border-subtle);
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-surface-base);
+    color: var(--color-foreground-primary);
+    font-family: var(--font-sans);
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-accent-tint);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

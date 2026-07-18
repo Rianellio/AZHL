@@ -1,0 +1,27 @@
+{
+  "name": "@azhl/mobile-api",
+  "private": true,
+  "version": "0.0.0",
+  "description": "AZHL mobile API — scaffold only. See README for the intended REST contract.",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --port 3002",
+    "build": "next build",
+    "start": "next start --port 3002",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "^15.0.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@azhl/config": "workspace:*",
+    "@types/node": "^22.7.9",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.1",
+    "eslint": "^9.13.0",
+    "typescript": "^5.6.3"
+  }
+}

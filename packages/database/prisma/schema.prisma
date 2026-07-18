@@ -1,0 +1,152 @@
+// AZHL data model — Phase 1 subset only. Full future ERD lives in .claude/erd.md.
+// Modeling conventions: .claude/database-guidelines.md
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model League {
+  id        String   @id @default(cuid())
+  name      String
+  shortName String
+  slug      String   @unique
+  seasons   Season[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("leagues")
+}
+
+model Season {
+  id        String     @id @default(cuid())
+  league    League     @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  leagueId  String
+  label     String
+  startDate DateTime
+  endDate   DateTime
+  isCurrent Boolean    @default(false)
+  games     Game[]
+  standings Standing[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([leagueId, isCurrent])
+  @@map("seasons")
+}
+
+model Team {
+  id            String   @id @default(cuid())
+  name          String
+  city          String
+  slug          String   @unique
+  abbreviation  String   @unique
+  colorPrimary  String
+  colorSecondary String
+  colorAccent   String
+  logoUrl       String?
+  players       Player[]
+  homeGames     Game[]     @relation("HomeTeam")
+  awayGames     Game[]     @relation("AwayTeam")
+  standings     Standing[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("teams")
+}
+
+enum PlayerPosition {
+  C
+  LW
+  RW
+  D
+  G
+}
+
+/// Minimal Phase 1 shape — full profile fields (bio, height/weight, draft info, awards) land in Phase 2.
+model Player {
+  id            String         @id @default(cuid())
+  team          Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamId        String
+  fullName      String
+  jerseyNumber  Int
+  position      PlayerPosition
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@unique([teamId, jerseyNumber])
+  @@index([teamId])
+  @@map("players")
+}
+
+enum GameStatus {
+  SCHEDULED
+  LIVE
+  FINAL
+  POSTPONED
+}
+
+model Game {
+  id          String     @id @default(cuid())
+  season      Season     @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  seasonId    String
+  status      GameStatus @default(SCHEDULED)
+  startTime   DateTime
+  venue       String
+  homeTeam    Team       @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  homeTeamId  String
+  awayTeam    Team       @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  awayTeamId  String
+  homeScore   Int?
+  awayScore   Int?
+  period      Int?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([seasonId, startTime])
+  @@index([homeTeamId])
+  @@index([awayTeamId])
+  @@map("games")
+}
+
+/// Derived/materialized per team per season — recomputed from Game results, not hand-edited.
+model Standing {
+  id          String   @id @default(cuid())
+  season      Season   @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  seasonId    String
+  team        Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamId      String
+  gamesPlayed Int      @default(0)
+  wins        Int      @default(0)
+  losses      Int      @default(0)
+  otLosses    Int      @default(0)
+  points      Int      @default(0)
+  goalsFor    Int      @default(0)
+  goalsAgainst Int     @default(0)
+  streak      String   @default("")
+  rank        Int
+  updatedAt   DateTime @updatedAt
+
+  @@unique([seasonId, teamId])
+  @@index([seasonId, rank])
+  @@map("standings")
+}
+
+model NewsArticle {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  title         String
+  excerpt       String
+  body          String
+  coverImageUrl String?
+  publishedAt   DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([publishedAt])
+  @@map("news_articles")
+}
