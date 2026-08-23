@@ -96,6 +96,11 @@ Turborepo's caching/dependency graph rather than a monolithic build step), and k
 go-live path fully documented in `README.md` so activating it later is a checklist, not a
 rediscovery.
 
+Before an implementation decision touching Docker, CI/CD, or infrastructure specifically,
+consult `.claude/security-skills-reference.md` — select the relevant external skill(s), state
+why they apply, and adapt them to AZHL's actual prepare-don't-provision posture rather than
+copying a recommendation verbatim.
+
 ## Never Do
 
 - Never create a GitHub remote, run `git push` to a remote, or run any `gh` command that

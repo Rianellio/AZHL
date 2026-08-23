@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { listNewsArticles } from "@/lib/server/services/news.service";
 import { ArticleCard } from "@/components/league/article-card";
+import { T } from "@/components/ui/t";
+import { EmptyState } from "@/components/league/empty-state";
 
 export const revalidate = 60;
 
@@ -13,8 +15,8 @@ export default async function NewsPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16">
-      <h1 className="mb-2 font-display text-4xl font-bold text-foreground-primary">News</h1>
-      <p className="mb-8 text-foreground-secondary">The latest from around the league.</p>
+      <T k="news.title" as="h1" className="mb-2 font-display text-4xl font-bold text-foreground-primary" />
+      <T k="news.subtitle" as="p" className="mb-8 text-foreground-secondary" />
       {articles.length > 0 ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {articles.map((article) => (
@@ -22,7 +24,7 @@ export default async function NewsPage() {
           ))}
         </div>
       ) : (
-        <p className="text-sm text-foreground-secondary">No articles published yet.</p>
+        <EmptyState textKey="news.empty" />
       )}
     </div>
   );

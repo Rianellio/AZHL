@@ -97,6 +97,11 @@ of truth (never let `erd.md` describe a shape the schema doesn't actually have),
 `prisma format` and `prisma validate` before committing a schema change, and prefer `@@index`
 additions driven by a real slow-query or known access pattern over blanket indexing.
 
+Before an implementation decision touching PostgreSQL access patterns or data-layer hardening
+specifically, consult `.claude/security-skills-reference.md` — select the relevant external
+skill(s), state why they apply, and adapt them to AZHL's actual Prisma-only-in-services pattern
+rather than copying a recommendation verbatim.
+
 ## Never Do
 
 - Never edit a migration file that has already been applied in a shared branch — add a new

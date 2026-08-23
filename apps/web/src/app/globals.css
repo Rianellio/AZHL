@@ -2,31 +2,44 @@
 @source "../../../../packages/ui/src";
 
 /*
- * Design tokens — see .claude/design-system.md for full rationale and contrast ratios.
- * All pairs are verified WCAG AA (text >=4.5:1 normal / >=3:1 large-or-UI-component).
+ * Design tokens — monochrome visual identity (black / white / neutral gray). Token NAMES are
+ * unchanged from the prior red-accent palette so no consuming component needed to change its
+ * class names, only these values — semantic meaning ("accent" = primary interactive emphasis,
+ * "live" = status indicator) is preserved even though hue is gone. Emphasis now comes from
+ * contrast/weight, not color. All pairs re-verified WCAG AA (text >=4.5:1 normal / >=3:1
+ * large-or-UI-component) — see .claude/design-system.md, pending its own refresh to record
+ * these exact values.
  */
 @theme {
-  --color-surface-base: #0a0b0d;
-  --color-surface-raised: #131417;
-  --color-surface-overlay: #1b1d21;
-  --color-surface-hover: #202226;
-  --color-border-subtle: #2a2d33;
-  --color-border-strong: #3a3e46;
+  --color-surface-base: #000000;
+  --color-surface-raised: #0a0a0a;
+  --color-surface-overlay: #111111;
+  --color-surface-hover: #161616;
+  --color-border-subtle: #222222;
+  --color-border-strong: #2a2a2a;
 
-  --color-foreground-primary: #f5f7fa;
-  --color-foreground-secondary: #a8aeb8;
-  --color-foreground-tertiary: #6b7180;
+  --color-foreground-primary: #ffffff;
+  --color-foreground-secondary: #b3b3b3;
+  --color-foreground-tertiary: #777777;
 
-  --color-accent: #2f8fff;
-  --color-accent-hover: #5ca8ff;
-  --color-accent-muted: #1c3a5e;
-  --color-accent-tint: #b9dbff;
+  /* Primary interactive state: white, on dark surfaces — the strongest available contrast,
+     used for buttons/CTAs/active nav/primary links. */
+  --color-accent: #ffffff;
+  --color-accent-hover: #d4d4d4;
+  --color-accent-muted: #1c1c1c;
+  --color-accent-tint: #000000;
 
-  --color-live: #ff3b45;
-  --color-live-muted: #3d1418;
+  /* Status indicators (e.g. "Live") no longer use a distinct hue — urgency now comes from the
+     existing pulse animation and weight/case, not color, per the monochrome constraint. */
+  --color-live: #ffffff;
+  --color-live-muted: #1c1c1c;
+
+  --radius-sm: 0.125rem;
+  --radius-md: 0.1875rem;
+  --radius-lg: 0.25rem;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-oswald), ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -47,6 +60,90 @@
   ::selection {
     background-color: var(--color-accent);
     color: var(--color-accent-tint);
+  }
+}
+
+/* Ambient hero-visual animations — see components/league/hero-visual.tsx. Both are neutralized by the prefers-reduced-motion rule below. */
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+@keyframes bloom-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Slow animated gradient wash for the Teams club-select panels (see team-select-panel.tsx). */
+@keyframes panel-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/*
+ * Cinematic lighting rig for the Teams club-select hover atmosphere — glow/spotlight, diagonal
+ * streaks, haze, depth gradients, and floating particles, composited with mix-blend-mode: screen
+ * so overlaps build up light additively instead of flattening into a solid tint. See
+ * components/league/team-select-panel.tsx.
+ */
+
+/* Soft ambient glow and the tighter spotlight behind the logo — slow breathing pulse. */
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.55; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.85; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+/* Diagonal light streaks sweeping slowly across the panel, left edge to right edge. */
+@keyframes streak-sweep {
+  0% { transform: translateX(-30%); opacity: 0; }
+  12% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateX(130%); opacity: 0; }
+}
+
+/* Broad atmospheric haze, very slowly drifting and breathing in density. */
+@keyframes haze-drift {
+  0%, 100% { transform: translate(-4%, -3%) scale(1); opacity: 0.28; }
+  50% { transform: translate(4%, 4%) scale(1.15); opacity: 0.42; }
+}
+
+/* Very small particles, gently floating in place rather than rising. */
+@keyframes particle-float {
+  0%, 100% { transform: translate(0, 0); opacity: 0.2; }
+  50% { transform: translate(5px, -10px); opacity: 0.75; }
+}
+
+/* Subtle diagonal reflection sweeping across the panel surface, like light on glass. */
+@keyframes reflection-sweep {
+  0% { transform: translateX(-120%) skewX(-14deg); opacity: 0; }
+  20% { opacity: 1; }
+  55% { opacity: 1; }
+  100% { transform: translateX(220%) skewX(-14deg); opacity: 0; }
+}
+
+/*
+ * Teams club-select screen: hovering one panel dims/desaturates the others via :has(), no JS
+ * coordination needed. See app/teams/page.tsx and components/league/team-select-panel.tsx.
+ */
+.team-select-grid .team-select-panel {
+  transition:
+    opacity 500ms ease,
+    filter 500ms ease;
+}
+.team-select-grid:has(.team-select-panel:hover) .team-select-panel:not(:hover) {
+  opacity: 0.16;
+  filter: grayscale(1) brightness(0.2);
+}
+
+/* One-time entrance for card grids on the League page — staggered via animation-delay per card. */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

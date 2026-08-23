@@ -85,6 +85,11 @@ Follow `.claude/api-guidelines.md`; specifically keep services pure and framewor
 where possible (no `next/server` imports inside `lib/server/services/*`), so they stay
 testable and portable if `apps/mobile-api` later needs the same logic.
 
+Before an implementation decision touching authentication, authorization/RBAC, JWT, or API
+design specifically, consult `.claude/security-skills-reference.md` — select the relevant
+external skill(s), state why they apply, and adapt them to AZHL's actual services→RSC/API
+pattern rather than copying a recommendation verbatim.
+
 ## Never Do
 
 - Never put business logic directly in a route handler or RSC page — always route through a

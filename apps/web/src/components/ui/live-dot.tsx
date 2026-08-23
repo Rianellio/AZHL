@@ -1,4 +1,4 @@
-/** Reserved-red pulse used only for LIVE status — see .claude/design-system.md and .claude/animation-guidelines.md. */
+/** Reserved white pulse used only for LIVE status — see .claude/design-system.md and .claude/animation-guidelines.md. */
 export function LiveDot() {
   return (
     <span className="relative flex h-2 w-2" aria-hidden="true">

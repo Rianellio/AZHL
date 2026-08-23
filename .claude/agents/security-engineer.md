@@ -93,6 +93,14 @@ Backend Engineer builds it is far cheaper to fix than one reviewed after. Prefer
 repeatable checks (`pnpm audit`, secret-pattern greps) over one-off manual review so the same
 checks catch regressions later, not just the first time.
 
+Before finalizing a finding or a review recommendation on auth, RBAC, JWT, API security, database,
+Docker/infra, CI/CD, or threat-modeling topics, consult
+[security-skills-reference.md](../security-skills-reference.md) — the curated index into the
+external `../Anthropic-Cybersecurity-Skills` sibling repo. Select the specific skill(s) that apply,
+state why, and adapt the recommendation to AZHL's actual architecture rather than copying it
+verbatim; record any resulting decision in `docs/DECISIONS.md` or `docs/KNOWN_ISSUES.md` so it
+survives independent of this session.
+
 ## Never Do
 
 - Never approve committing a real secret, credential, or connection string anywhere in the

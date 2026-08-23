@@ -1,21 +1,24 @@
 import type { Metadata } from "next";
-import { inter, spaceGrotesk } from "@/lib/fonts";
+import { inter, oswald } from "@/lib/fonts";
 import { Shell } from "@/components/layout/shell";
+import { LocaleProvider } from "@/lib/i18n/locale-context";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "AZHL — Arctic Zone Hockey League",
+    default: "AZHL — Azerbaijan Hockey League",
     template: "%s | AZHL",
   },
-  description: "Standings, schedule, scores, and news for the Arctic Zone Hockey League.",
+  description: "Standings, schedule, scores, and news for the Azerbaijan Hockey League.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
+    <html lang="en" className={`${inter.variable} ${oswald.variable}`}>
       <body>
-        <Shell>{children}</Shell>
+        <LocaleProvider>
+          <Shell>{children}</Shell>
+        </LocaleProvider>
       </body>
     </html>
   );

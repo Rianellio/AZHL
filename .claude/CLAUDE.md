@@ -48,6 +48,14 @@ Every AI session working in this repo should treat
 [MASTER_SYSTEM_PROMPT.md](./MASTER_SYSTEM_PROMPT.md) as governing context — it states the
 non-negotiable operating rules and scopes this repo to AZHL exclusively.
 
+**Before making an implementation decision touching backend logic, authentication, authorization/
+RBAC, JWT, API design, PostgreSQL, Redis, Docker, MinIO, BullMQ, Kafka, CI/CD, infrastructure,
+threat modeling, or a security review, consult**
+[security-skills-reference.md](./security-skills-reference.md) — the pointer to an external,
+sibling cybersecurity skills library (`../Anthropic-Cybersecurity-Skills`), curated to AZHL's own
+stack. Never blind-copy a recommendation from it; that document states the required
+select-explain-adapt-record workflow.
+
 ## The 12 agents
 
 `.claude/agents/` holds 12 specialized subagent definitions — the permanent AI engineering team
@@ -82,6 +90,19 @@ agent whose domain it falls in rather than solving everything generically; see
 | [github-strategy.md](./github-strategy.md) | Branch strategy, commit format, PR process, remote go-live plan |
 | [future-services.md](./future-services.md) | Architectural detail for mobile-api, admin, ticketing, shop, streaming, Cloudinary/Vercel/GitHub go-live |
 | [architecture.md](./architecture.md)* | Stack, monorepo layout, services→RSC/API pattern, app boundaries, conventions |
+| [backend-architecture.md](./backend-architecture.md) | Design-only: modular monolith → event-driven/Kafka/microservices evolution, module boundaries, Event Bus, Redis/BullMQ/storage/auth/RBAC — nothing in it is built yet |
+| [database-erd.md](./database-erd.md) | Design-only: complete target ERD (auth/RBAC, roster, games, stats, content, media, notifications, audit, settings) per Postgres schema, superseding erd.md's brief future-entity sketches — nothing in it is built yet |
+| [api-specification.md](./api-specification.md) | Design-only: full v1 REST endpoint catalog (56 endpoints across auth/users/teams/players/games/standings/stats/news/media/sponsors/notifications/audit-logs), extending api-guidelines.md — nothing in it is built yet |
+| [event-catalog.md](./event-catalog.md) | Design-only: full domain event catalog (35 events) with priority/retry/idempotency/persistence policy tiers, extending backend-architecture.md §4–§5's Event Bus design — nothing in it is built yet |
+| [security-architecture.md](./security-architecture.md) | Design-only: complete security architecture (JWT/refresh/RBAC/2FA/CSRF/CORS/XSS/SQLi/secrets/MinIO/file-upload/future OAuth-SSO-API-keys-mobile), extending backend-architecture.md §11-§12/§16 — nothing in it is built yet |
+| [bullmq-architecture.md](./bullmq-architecture.md) | Design-only: complete BullMQ architecture (17 queues — workers, retry/DLQ, image/video/email/stats/notification queues, backups, maintenance, cleanup, monitoring, failure recovery), extending backend-architecture.md §9 — nothing in it is built yet |
+| [storage-architecture.md](./storage-architecture.md) | Design-only: complete MinIO/object-storage architecture (buckets, paths, naming, compression, video, versioning, public/private, signed URLs, backup, CDN), extending backend-architecture.md §7 / security-architecture.md §17 — nothing in it is built yet |
+| [observability-architecture.md](./observability-architecture.md) | Design-only: production monitoring (logging, metrics/Prometheus, Grafana, tracing/OpenTelemetry, health checks, alerting, error reporting, performance, future distributed tracing), extending backend-architecture.md §13 / bullmq-architecture.md §14 — nothing in it is built yet |
+| [../docs/security/09-security-architecture-review.md](../docs/security/09-security-architecture-review.md) | Principal Security Architect review of all backend design docs — 3 Critical/6 High/8 Medium/5 Low findings, OWASP ASVS/Top 10/API Top 10-mapped, readiness score 6.1/10 |
+| [../docs/adr/ADR-001-inter-module-trust.md](../docs/adr/ADR-001-inter-module-trust.md) | ADR: enforced Security Principal propagation (AsyncLocalStorage + capability Symbol + signed cross-process token) remediating security-review finding C-1 — design accepted, not yet implemented |
+| [../docs/adr/ADR-002-event-bus-trust.md](../docs/adr/ADR-002-event-bus-trust.md) | ADR: Event Bus publisher trust model (bound per-module publisher + EVENT_PUBLISHER_ALLOWLIST + signed Provenance Claim, builds on ADR-001) remediating security-review finding C-2 (and L-4) — design accepted, not yet implemented |
+| [../docs/adr/ADR-003-redis-security.md](../docs/adr/ADR-003-redis-security.md) | ADR: trust-tiered Redis security architecture (ACLs, TLS, network isolation, two-instance split `azhl-redis-critical`/`azhl-redis-cache`, JPEK field-level job encryption, builds on ADR-001/002) remediating security-review finding C-3 — design accepted, not yet implemented |
+| [../docs/adr/ADR-004-H-1-remediation.md](../docs/adr/ADR-004-H-1-remediation.md) | ADR: immediate token revocation on role change/deactivation (per-user `revocation:not-before` timestamp, synchronous with the Postgres write, complementing the existing jti-blocklist which can't express broad per-user revocation) remediating security-review finding H-1 — design accepted, not yet implemented |
 | [design-system.md](./design-system.md) | Palette, type scale, spacing, motion principles, glassmorphism rules |
 | [component-library.md](./component-library.md) | `packages/ui` and `apps/web` component inventory and usage patterns |
 | [coding-standards.md](./coding-standards.md) | TS conventions, naming, error handling, testing expectations |
@@ -89,6 +110,7 @@ agent whose domain it falls in rather than solving everything generically; see
 | [database-guidelines.md](./database-guidelines.md) | Prisma modeling conventions, migration workflow, seeding policy |
 | [erd.md](./erd.md) | Entity-relationship diagram and schema documentation for `packages/database` |
 | [animation-guidelines.md](./animation-guidelines.md) | Motion tokens, `prefers-reduced-motion`, performance budget |
+| [security-skills-reference.md](./security-skills-reference.md) | Pointer + curated index into the external `../Anthropic-Cybersecurity-Skills` library, mapped to AZHL's stack — consult before backend/auth/RBAC/JWT/API/DB/infra/CI-CD/threat-modeling/security-review decisions |
 
 All documents above are complete as of the Phase 0/1 foundation pass. If you spot a doc that
 contradicts the actual code (e.g. a token name, file path, or API shape that changed since),

@@ -1,18 +1,22 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getGameById } from "@/lib/server/services/schedule.service";
-import { formatGameDate, formatGameTime } from "@azhl/utils";
 import { Badge } from "@/components/ui/badge";
 import { LiveDot } from "@/components/ui/live-dot";
 import { Card, CardContent } from "@/components/ui/card";
+import { TeamLogo } from "@/components/league/team-logo";
+import { GameDate, GameTime } from "@/components/league/game-date";
+import { T } from "@/components/ui/t";
+import type { GameDTO } from "@azhl/types";
+import type { TranslationKey } from "@/lib/i18n/dictionaries";
 
 export const revalidate = 60;
 
-const STATUS_LABEL: Record<string, string> = {
-  SCHEDULED: "Upcoming",
-  LIVE: "Live",
-  FINAL: "Final",
-  POSTPONED: "Postponed",
+const STATUS_LABEL_KEY: Record<string, TranslationKey> = {
+  SCHEDULED: "status.upcoming",
+  LIVE: "status.live",
+  FINAL: "status.final",
+  POSTPONED: "status.postponed",
 };
 
 export async function generateMetadata({
@@ -41,33 +45,23 @@ export default async function GameCenterPage({
         {game.status === "LIVE" ? (
           <Badge variant="live">
             <LiveDot />
-            {STATUS_LABEL[game.status]} &middot; Period {game.period ?? 1}
+            <T k={STATUS_LABEL_KEY[game.status]!} /> &middot; <T k="game.period" /> {game.period ?? 1}
           </Badge>
         ) : (
-          <Badge variant="neutral">{STATUS_LABEL[game.status]}</Badge>
+          <Badge variant="neutral">
+            <T k={STATUS_LABEL_KEY[game.status]!} />
+          </Badge>
         )}
         <span className="text-sm text-foreground-secondary">
-          {formatGameDate(game.startTime)} &middot; {formatGameTime(game.startTime)}
+          <GameDate iso={game.startTime} /> &middot; <GameTime iso={game.startTime} />
         </span>
       </div>
 
       <Card>
         <CardContent className="flex flex-col gap-8 p-8">
-          <TeamScoreRow
-            abbreviation={game.awayTeam.abbreviation}
-            name={game.awayTeam.name}
-            score={game.awayScore}
-            accent={game.awayTeam.colors.accent}
-            label="Away"
-          />
+          <TeamScoreRow team={game.awayTeam} score={game.awayScore} labelKey="game.away" />
           <div className="h-px bg-border-subtle" />
-          <TeamScoreRow
-            abbreviation={game.homeTeam.abbreviation}
-            name={game.homeTeam.name}
-            score={game.homeScore}
-            accent={game.homeTeam.colors.accent}
-            label="Home"
-          />
+          <TeamScoreRow team={game.homeTeam} score={game.homeScore} labelKey="game.home" />
         </CardContent>
       </Card>
 
@@ -77,33 +71,25 @@ export default async function GameCenterPage({
 }
 
 function TeamScoreRow({
-  abbreviation,
-  name,
+  team,
   score,
-  accent,
-  label,
+  labelKey,
 }: {
-  abbreviation: string;
-  name: string;
+  team: GameDTO["homeTeam"];
   score: number | null;
-  accent: string;
-  label: string;
+  labelKey: TranslationKey;
 }) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-4">
-        <span
-          className="flex h-12 w-12 items-center justify-center rounded-full font-display text-sm font-bold text-surface-base"
-          style={{ backgroundColor: accent }}
-          aria-hidden="true"
-        >
-          {abbreviation}
-        </span>
+        <TeamLogo teamSlug={team.slug} teamName={team.name} size={48} />
         <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-foreground-secondary">
-            {label}
-          </p>
-          <p className="font-display text-xl font-semibold text-foreground-primary">{name}</p>
+          <T
+            k={labelKey}
+            as="p"
+            className="text-xs font-medium uppercase tracking-wide text-foreground-secondary"
+          />
+          <p className="font-display text-xl font-semibold text-foreground-primary">{team.name}</p>
         </div>
       </div>
       <span className="font-display text-4xl font-bold text-foreground-primary">{score ?? "-"}</span>

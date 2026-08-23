@@ -11,18 +11,19 @@ import { cn } from "@azhl/utils";
  */
 export const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium " +
-    "transition-colors duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 " +
-    "focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base " +
+    "transition-[color,background-color,border-color,transform] duration-150 ease-out " +
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent " +
+    "focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base active:scale-[0.97] " +
     "disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        primary: "bg-accent text-accent-tint hover:bg-accent-hover",
+        primary: "bg-accent text-accent-tint hover:bg-accent-hover active:bg-accent-hover",
         secondary:
-          "bg-surface-raised text-foreground-primary hover:bg-surface-hover border border-border-subtle",
-        ghost: "text-foreground-primary hover:bg-surface-hover",
+          "bg-surface-raised text-foreground-primary hover:bg-surface-hover active:bg-surface-hover border border-border-subtle",
+        ghost: "text-foreground-primary hover:bg-surface-hover active:bg-surface-hover",
         // Not yet used by any Phase 1 page — flag for a contrast re-check by UI/UX Architect before first real use.
-        live: "bg-live text-foreground-primary hover:bg-live/90",
+        live: "bg-live text-accent-tint hover:bg-live/90 active:bg-live/90",
       },
       size: {
         sm: "h-8 px-3",
