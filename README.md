@@ -1,4 +1,4 @@
-# AZHL — Arctic Zone Hockey League
+# AzHL — Azerbaijan Hockey League
 
 A premium hockey league platform in the visual and experiential territory of NHL.com,
 Formula1.com, Apple, Linear, and Vercel — dark, minimal, large type, cinematic motion, high
