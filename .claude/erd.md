@@ -50,7 +50,7 @@ schema file ever disagree, the schema file wins; update this doc to match.
 | Field | Type | Notes |
 |---|---|---|
 | `id` | `String` (cuid) | PK |
-| `name` | `String` | e.g. "Arctic Zone Hockey League" |
+| `name` | `String` | e.g. "Azerbaijan Hockey League" |
 | `shortName` | `String` | e.g. "AZHL" |
 | `slug` | `String` | unique |
 | `seasons` | `Season[]` | one-to-many |
