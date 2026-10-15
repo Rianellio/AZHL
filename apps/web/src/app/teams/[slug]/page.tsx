@@ -52,10 +52,10 @@ export default async function TeamDetailPage({
       </section>
 
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-14 px-6 py-14">
-        {/* Lineup on the rink — positions only for now, see RinkRoster */}
+        {/* Lineup on the rink — see RinkRoster */}
         <section>
           <SectionHeader titleKey="teamDetail.startingLineup" />
-          <RinkRoster accent={team.colors.accent} />
+          <RinkRoster players={players} accent={team.colors.accent} />
         </section>
 
         {/* Full squad, grouped by position */}
