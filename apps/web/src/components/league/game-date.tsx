@@ -12,7 +12,9 @@ export function GameDate({ iso }: { iso: string }) {
   return <>{formatGameDate(iso, intlTag)}</>;
 }
 
-export function GameTime({ iso }: { iso: string }) {
-  const { intlTag } = useTranslation();
-  return <>{formatGameTime(iso, intlTag)}</>;
+/** Shows "Time TBA" (localized) until the league confirms the face-off time — an unconfirmed
+ * startTime only carries the date (stored at 12:00 UTC), so its clock time is meaningless. */
+export function GameTime({ iso, confirmed }: { iso: string; confirmed: boolean }) {
+  const { t, intlTag } = useTranslation();
+  return <>{confirmed ? formatGameTime(iso, intlTag) : t("game.timeTba")}</>;
 }

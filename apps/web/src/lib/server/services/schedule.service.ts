@@ -26,12 +26,22 @@ function toGameDTO(game: GameWithTeams): GameDTO {
     seasonId: game.seasonId,
     status: game.status,
     startTime: game.startTime.toISOString(),
+    startTimeConfirmed: game.startTimeConfirmed,
     venue: game.venue,
     homeTeam: toTeamSummary(game.homeTeam),
     awayTeam: toTeamSummary(game.awayTeam),
     homeScore: game.homeScore,
     awayScore: game.awayScore,
     period: game.period,
+    stage: game.stage,
+    matchNumber: game.matchNumber,
+    decidedBy: game.decidedBy,
+    homeShootoutGoals: game.homeShootoutGoals,
+    awayShootoutGoals: game.awayShootoutGoals,
+    homePeriodScores: game.homePeriodScores,
+    awayPeriodScores: game.awayPeriodScores,
+    homeShots: game.homeShots,
+    awayShots: game.awayShots,
   };
 }
 

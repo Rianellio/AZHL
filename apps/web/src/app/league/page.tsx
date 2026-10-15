@@ -91,14 +91,9 @@ export default async function LeaguePage() {
               >
                 <CardContent className="flex flex-col items-center gap-4 p-8 text-center">
                   <TeamLogo teamSlug={team.slug} teamName={team.name} size={88} />
-                  <div>
-                    <h3 className="font-display text-lg font-bold uppercase tracking-wide text-foreground-primary">
-                      {team.name}
-                    </h3>
-                    <p className="text-xs font-medium uppercase tracking-wide text-foreground-tertiary">
-                      {team.city}
-                    </p>
-                  </div>
+                  <h3 className="font-display text-lg font-bold uppercase tracking-wide text-foreground-primary">
+                    {team.name}
+                  </h3>
                 </CardContent>
               </Card>
             </Link>

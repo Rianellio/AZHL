@@ -5,6 +5,8 @@ import { User } from "lucide-react";
 import { getPlayerById } from "@/lib/server/services/player.service";
 import { getCurrentSeasonSchedule } from "@/lib/server/services/schedule.service";
 import { getMockPlayerStats } from "@/lib/mock/player-stats";
+import { getMockGoalieStats } from "@/lib/mock/goalie-stats";
+import { formatCount, formatGoalsAgainstAverage, formatSavePercentage } from "@/lib/stat-format";
 import { getMockPlayerBio } from "@/lib/mock/player-bio";
 import { getMockTeamNews } from "@/lib/mock/team-news";
 import { ImagePlaceholder } from "@/components/ui/image-placeholder";
@@ -40,6 +42,7 @@ export default async function PlayerProfilePage({
   const schedule = await getCurrentSeasonSchedule();
 
   const seasonStats = getMockPlayerStats(player);
+  const goalieStats = player.position === "G" ? getMockGoalieStats(player) : null;
   const bio = getMockPlayerBio(player.id, player.team.name);
   const relatedNews = getMockTeamNews(player.team.name).slice(0, 2);
   const posKey = positionTranslationKey(player.position);
@@ -99,12 +102,33 @@ export default async function PlayerProfilePage({
         {/* Season stats */}
         <section>
           <SectionHeader titleKey="playerDetail.seasonStatistics" />
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <StatTile labelKey="standings.colGP" value={seasonStats.gamesPlayed} />
-            <StatTile labelKey="playerDetail.goals" value={seasonStats.goals} />
-            <StatTile labelKey="playerDetail.assists" value={seasonStats.assists} />
-            <StatTile labelKey="playerDetail.points" value={seasonStats.points} />
-          </div>
+          {goalieStats ? (
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+              <StatTile labelKey="standings.colGP" value={goalieStats.gamesPlayed} />
+              <StatTile labelKey="playerDetail.wins" value={formatCount(goalieStats.wins, goalieStats.gamesPlayed)} />
+              <StatTile labelKey="playerDetail.losses" value={formatCount(goalieStats.losses, goalieStats.gamesPlayed)} />
+              <StatTile
+                labelKey="playerDetail.goalsAgainstAverage"
+                value={formatGoalsAgainstAverage(goalieStats.goalsAgainstAverage, goalieStats.gamesPlayed)}
+              />
+              <StatTile
+                labelKey="playerDetail.savePercentage"
+                value={formatSavePercentage(goalieStats.savePercentage, goalieStats.gamesPlayed)}
+              />
+              <StatTile labelKey="playerDetail.shutouts" value={formatCount(goalieStats.shutouts, goalieStats.gamesPlayed)} />
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+              <StatTile labelKey="standings.colGP" value={seasonStats.gamesPlayed} />
+              <StatTile labelKey="playerDetail.goals" value={formatCount(seasonStats.goals, seasonStats.gamesPlayed)} />
+              <StatTile labelKey="playerDetail.assists" value={formatCount(seasonStats.assists, seasonStats.gamesPlayed)} />
+              <StatTile labelKey="playerDetail.points" value={formatCount(seasonStats.points, seasonStats.gamesPlayed)} />
+              <StatTile
+                labelKey="playerDetail.penaltyMinutes"
+                value={formatCount(seasonStats.penaltyMinutes, seasonStats.gamesPlayed)}
+              />
+            </div>
+          )}
         </section>
 
         {/* Career stats */}

@@ -68,14 +68,13 @@ export const en = {
     "Our goal is to develop hockey teams, organize regular championships, and build a strong hockey community in Azerbaijan.",
   "league.competitionFormat": "Competition Format",
   "league.format4Teams": "4 Teams",
-  "league.format4TeamsDesc": "Four clubs compete in AZHL, each representing a different city in Azerbaijan.",
+  "league.format4TeamsDesc": "Four clubs, one venue: every match is played in Baku at the Heydar Aliyev Sports and Concert Complex.",
   "league.formatRegularSeason": "Regular Season",
-  "league.formatRegularSeasonDesc": "Every club faces the others home and away in a round-robin schedule.",
+  "league.formatRegularSeasonDesc": "Each club plays 15 matches (30 in total). Three 20-minute periods, no overtime — a game tied after regulation goes to a shootout.",
   "league.formatPlayoffs": "Playoffs",
-  "league.formatPlayoffsDesc": "The leading clubs from the regular season advance to the playoffs.",
+  "league.formatPlayoffsDesc": "All four clubs make the playoffs. Semifinals pair 1st vs 4th and 2nd vs 3rd, best of three (first to two wins).",
   "league.formatFinal": "Championship Final",
-  "league.formatFinalDesc":
-    "The playoffs conclude with a single Championship Final to crown the AZHL champion.",
+  "league.formatFinalDesc": "The semifinal winners meet in a best-of-five final (first to three wins) to crown the AZHL champion.",
   "league.teamsOverview": "Teams Overview",
   "league.viewAllTeams": "View all teams",
   "league.championshipTrophy": "Championship Trophy",
@@ -92,6 +91,7 @@ export const en = {
   "teamDetail.standingsWillAppear": "Standings will appear once the season begins.",
   "teamDetail.rank": "Rank",
   "teamDetail.gfga": "GF / GA",
+  "teamDetail.teamLeaders": "Team Leaders",
 
   // Full squad groups + table
   "fullSquad.goalkeepers": "Goalkeepers",
@@ -99,6 +99,7 @@ export const en = {
   "fullSquad.forwards": "Forwards",
   "fullSquad.colNum": "#",
   "fullSquad.colPos": "Pos",
+  "fullSquad.colPlayer": "Player",
 
   // Players list page
   "players.title": "Players",
@@ -134,6 +135,16 @@ export const en = {
   "playerDetail.dayAgo": "1 day ago",
   "playerDetail.daysAgo": "{n} days ago",
   "playerDetail.countrySuffix": "Azerbaijan",
+  "playerDetail.penaltyMinutes": "Penalty Minutes",
+  "playerDetail.wins": "Wins",
+  "playerDetail.losses": "Losses",
+  "playerDetail.goalsAgainstAverage": "Goals Against Avg",
+  "playerDetail.savePercentage": "Save Percentage",
+  "playerDetail.shutouts": "Shutouts",
+  "playerDetail.colPim": "PIM",
+  "playerDetail.colGaa": "GAA",
+  "playerDetail.colSvPct": "SV%",
+  "playerDetail.colSo": "SO",
 
   // Schedule page
   "schedule.title": "Schedule",
@@ -156,8 +167,8 @@ export const en = {
   "standings.colTeam": "Team",
   "standings.colGP": "GP",
   "standings.colW": "W",
-  "standings.colOTW": "OTW",
-  "standings.colOTL": "OTL",
+  "standings.colSOW": "SOW",
+  "standings.colSOL": "SOL",
   "standings.colL": "L",
   "standings.colGF": "GF",
   "standings.colGA": "GA",
@@ -221,6 +232,12 @@ export const en = {
   "game.away": "Away",
   "game.home": "Home",
   "game.period": "Period",
+  "game.timeTba": "Time TBA",
+  "game.shootout": "Shootout",
+  "game.shootoutAbbr": "SO",
+  "game.periodScores": "Score by period",
+  "game.colTotal": "T",
+  "game.shots": "Shots on goal",
 
   // Game/game-card status labels
   "status.upcoming": "Upcoming",

@@ -90,6 +90,17 @@ enum GameStatus {
   POSTPONED
 }
 
+enum GameStage {
+  REGULAR_SEASON
+  PLAYOFF
+}
+
+/// No overtime in AZHL — a game tied after 3 periods goes straight to a shootout.
+enum GameDecision {
+  REGULATION
+  SHOOTOUT
+}
+
 model Game {
   id          String     @id @default(cuid())
   season      Season     @relation(fields: [seasonId], references: [id], onDelete: Cascade)
@@ -104,9 +115,24 @@ model Game {
   homeScore   Int?
   awayScore   Int?
   period      Int?
+  stage       GameStage  @default(REGULAR_SEASON)
+  /// Official match number from the league calendar (unique per season + stage).
+  matchNumber Int?
+  /// Null until the game is FINAL.
+  decidedBy   GameDecision?
+  /// Goals in the shootout itself. The +1 the shootout winner gets is already in homeScore/awayScore.
+  homeShootoutGoals Int?
+  awayShootoutGoals Int?
+  homePeriodScores  Int[]  @default([])
+  awayPeriodScores  Int[]  @default([])
+  homeShots   Int?
+  awayShots   Int?
+  /// False until the league announces the face-off time; startTime then holds the date at 12:00 UTC.
+  startTimeConfirmed Boolean @default(false)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
+  @@unique([seasonId, stage, matchNumber])
   @@index([seasonId, startTime])
   @@index([homeTeamId])
   @@index([awayTeamId])
@@ -121,8 +147,12 @@ model Standing {
   team        Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
   teamId      String
   gamesPlayed Int      @default(0)
+  /// Regulation wins/losses only — GP = wins + shootoutWins + shootoutLosses + losses.
   wins        Int      @default(0)
   losses      Int      @default(0)
+  shootoutWins   Int   @default(0)
+  shootoutLosses Int   @default(0)
+  /// deprecated — unused, drop in a follow-up migration after this release is live
   otLosses    Int      @default(0)
   points      Int      @default(0)
   goalsFor    Int      @default(0)

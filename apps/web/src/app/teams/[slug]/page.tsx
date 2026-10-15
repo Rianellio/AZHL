@@ -9,6 +9,8 @@ import { RinkRoster } from "@/components/league/rink-roster";
 import { FullSquad } from "@/components/league/full-squad";
 import { TeamLogo } from "@/components/league/team-logo";
 import { EmptyState } from "@/components/league/empty-state";
+import { StatLeaderboardCard } from "@/components/league/stat-leaderboard-card";
+import { topGoaliesBy, topSkatersBy } from "@/lib/stat-leaders";
 
 export const revalidate = 60;
 
@@ -38,6 +40,8 @@ export default async function TeamDetailPage({
   ]);
 
   const standing = standings.find((s) => s.team.id === team.id);
+  const skaters = players.filter((player) => player.position !== "G");
+  const goalies = players.filter((player) => player.position === "G");
 
   return (
     <div className="flex flex-col">
@@ -52,10 +56,41 @@ export default async function TeamDetailPage({
       </section>
 
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-14 px-6 py-14">
-        {/* Lineup on the rink — positions only for now, see RinkRoster */}
+        {/* Lineup on the rink — see RinkRoster */}
         <section>
           <SectionHeader titleKey="teamDetail.startingLineup" />
-          <RinkRoster accent={team.colors.accent} />
+          <RinkRoster players={players} accent={team.colors.accent} />
+        </section>
+
+        {/* Team leaders — same nonzero-only rule as /stats, so this is an empty state until real stats exist */}
+        <section>
+          <SectionHeader titleKey="teamDetail.teamLeaders" />
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <StatLeaderboardCard
+              titleKey="stats.points"
+              abbreviationKey="playerDetail.colPts"
+              entries={topSkatersBy(skaters, "points", 3)}
+              emptyMessageKey="stats.emptyPoints"
+            />
+            <StatLeaderboardCard
+              titleKey="stats.goals"
+              abbreviationKey="playerDetail.colG"
+              entries={topSkatersBy(skaters, "goals", 3)}
+              emptyMessageKey="stats.emptyGoals"
+            />
+            <StatLeaderboardCard
+              titleKey="stats.assists"
+              abbreviationKey="playerDetail.colA"
+              entries={topSkatersBy(skaters, "assists", 3)}
+              emptyMessageKey="stats.emptyAssists"
+            />
+            <StatLeaderboardCard
+              titleKey="stats.goalies"
+              abbreviationKey="playerDetail.colSvPct"
+              entries={topGoaliesBy(goalies, "savePercentage", 3)}
+              emptyMessageKey="stats.emptyGoalies"
+            />
+          </div>
         </section>
 
         {/* Full squad, grouped by position */}
@@ -75,12 +110,13 @@ export default async function TeamDetailPage({
             action={{ labelKey: "teamDetail.fullStandings", href: "/standings" }}
           />
           {standing ? (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-8">
               <StatTile labelKey="teamDetail.rank" value={standing.rank} />
               <StatTile labelKey="standings.colGP" value={standing.gamesPlayed} />
               <StatTile labelKey="standings.colW" value={standing.wins} />
+              <StatTile labelKey="standings.colSOW" value={standing.shootoutWins} />
+              <StatTile labelKey="standings.colSOL" value={standing.shootoutLosses} />
               <StatTile labelKey="standings.colL" value={standing.losses} />
-              <StatTile labelKey="standings.colOTL" value={standing.otLosses} />
               <StatTile labelKey="standings.colPTS" value={standing.points} />
               <StatTile labelKey="teamDetail.gfga" value={`${standing.goalsFor} / ${standing.goalsAgainst}`} />
             </div>

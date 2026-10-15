@@ -15,8 +15,9 @@ export function StandingsWidget({ standings }: { standings: StandingDTO[] }) {
           <TableHeaderCell>{t("standings.colTeam")}</TableHeaderCell>
           <TableHeaderCell>{t("standings.colGP")}</TableHeaderCell>
           <TableHeaderCell>{t("standings.colW")}</TableHeaderCell>
+          <TableHeaderCell>{t("standings.colSOW")}</TableHeaderCell>
+          <TableHeaderCell>{t("standings.colSOL")}</TableHeaderCell>
           <TableHeaderCell>{t("standings.colL")}</TableHeaderCell>
-          <TableHeaderCell>{t("standings.colOTL")}</TableHeaderCell>
           <TableHeaderCell>{t("standings.colPTS")}</TableHeaderCell>
         </TableRow>
       </TableHead>
@@ -32,8 +33,9 @@ export function StandingsWidget({ standings }: { standings: StandingDTO[] }) {
             </TableCell>
             <TableCell>{standing.gamesPlayed}</TableCell>
             <TableCell>{standing.wins}</TableCell>
+            <TableCell>{standing.shootoutWins}</TableCell>
+            <TableCell>{standing.shootoutLosses}</TableCell>
             <TableCell>{standing.losses}</TableCell>
-            <TableCell>{standing.otLosses}</TableCell>
             <TableCell className="font-semibold text-foreground-primary">{standing.points}</TableCell>
           </TableRow>
         ))}

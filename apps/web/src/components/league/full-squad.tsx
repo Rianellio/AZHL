@@ -1,7 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import type { PlayerWithTeamDTO } from "@/lib/server/services/player.service";
 import { getMockPlayerStats } from "@/lib/mock/player-stats";
+import { getMockGoalieStats } from "@/lib/mock/goalie-stats";
+import { formatCount, formatGoalsAgainstAverage, formatSavePercentage } from "@/lib/stat-format";
 import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow } from "@/components/ui/table";
 import { positionTranslationKey } from "@/lib/i18n/position-key";
 import { useTranslation } from "@/lib/i18n/use-translation";
@@ -14,9 +17,9 @@ const GROUPS: { titleKey: TranslationKey; positions: string[] }[] = [
 ];
 
 /**
- * Layout placeholders only — no real players exist yet, so no names, photos, or profile
- * links. Jersey number + position + GP/G/A/PTS demonstrate the roster structure; the CMS
- * replaces these rows with real players later without this layout changing.
+ * Roster tables grouped by position, each row linking to the player's profile. Skaters show
+ * GP/G/A/PTS/PIM; goalies get their own GP/W/L/GAA/SV%/SO table. Stats are mock (zero
+ * outside development — see lib/mock/README.md) until real season stats exist.
  */
 export function FullSquad({ players }: { players: PlayerWithTeamDTO[] }) {
   const { t } = useTranslation();
@@ -29,6 +32,7 @@ export function FullSquad({ players }: { players: PlayerWithTeamDTO[] }) {
           .sort((a, b) => a.jerseyNumber - b.jerseyNumber);
 
         if (groupPlayers.length === 0) return null;
+        const isGoalieGroup = group.positions.includes("G");
 
         return (
           <div key={group.titleKey}>
@@ -39,27 +43,45 @@ export function FullSquad({ players }: { players: PlayerWithTeamDTO[] }) {
               <TableHead>
                 <TableRow>
                   <TableHeaderCell>{t("fullSquad.colNum")}</TableHeaderCell>
+                  <TableHeaderCell>{t("fullSquad.colPlayer")}</TableHeaderCell>
                   <TableHeaderCell>{t("fullSquad.colPos")}</TableHeaderCell>
                   <TableHeaderCell>{t("standings.colGP")}</TableHeaderCell>
-                  <TableHeaderCell>{t("playerDetail.colG")}</TableHeaderCell>
-                  <TableHeaderCell>{t("playerDetail.colA")}</TableHeaderCell>
-                  <TableHeaderCell>{t("playerDetail.colPts")}</TableHeaderCell>
+                  {isGoalieGroup ? (
+                    <>
+                      <TableHeaderCell>{t("standings.colW")}</TableHeaderCell>
+                      <TableHeaderCell>{t("standings.colL")}</TableHeaderCell>
+                      <TableHeaderCell>{t("playerDetail.colGaa")}</TableHeaderCell>
+                      <TableHeaderCell>{t("playerDetail.colSvPct")}</TableHeaderCell>
+                      <TableHeaderCell>{t("playerDetail.colSo")}</TableHeaderCell>
+                    </>
+                  ) : (
+                    <>
+                      <TableHeaderCell>{t("playerDetail.colG")}</TableHeaderCell>
+                      <TableHeaderCell>{t("playerDetail.colA")}</TableHeaderCell>
+                      <TableHeaderCell>{t("playerDetail.colPts")}</TableHeaderCell>
+                      <TableHeaderCell>{t("playerDetail.colPim")}</TableHeaderCell>
+                    </>
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>
                 {groupPlayers.map((player) => {
-                  const stats = getMockPlayerStats(player);
                   const posKey = positionTranslationKey(player.position);
                   return (
                     <TableRow key={player.id}>
                       <TableCell className="font-display font-semibold text-foreground-primary">
                         {player.jerseyNumber}
                       </TableCell>
+                      <TableCell>
+                        <Link
+                          href={`/players/${player.id}`}
+                          className="font-medium text-foreground-primary hover:text-accent"
+                        >
+                          {player.fullName}
+                        </Link>
+                      </TableCell>
                       <TableCell>{posKey ? t(posKey) : player.position}</TableCell>
-                      <TableCell>{stats.gamesPlayed}</TableCell>
-                      <TableCell>{stats.goals}</TableCell>
-                      <TableCell>{stats.assists}</TableCell>
-                      <TableCell className="font-semibold text-foreground-primary">{stats.points}</TableCell>
+                      {isGoalieGroup ? <GoalieCells player={player} /> : <SkaterCells player={player} />}
                     </TableRow>
                   );
                 })}
@@ -69,5 +91,36 @@ export function FullSquad({ players }: { players: PlayerWithTeamDTO[] }) {
         );
       })}
     </div>
+  );
+}
+
+function SkaterCells({ player }: { player: PlayerWithTeamDTO }) {
+  const stats = getMockPlayerStats(player);
+  const gp = stats.gamesPlayed;
+  return (
+    <>
+      <TableCell>{gp}</TableCell>
+      <TableCell>{formatCount(stats.goals, gp)}</TableCell>
+      <TableCell>{formatCount(stats.assists, gp)}</TableCell>
+      <TableCell className="font-semibold text-foreground-primary">{formatCount(stats.points, gp)}</TableCell>
+      <TableCell>{formatCount(stats.penaltyMinutes, gp)}</TableCell>
+    </>
+  );
+}
+
+function GoalieCells({ player }: { player: PlayerWithTeamDTO }) {
+  const stats = getMockGoalieStats(player);
+  const gp = stats.gamesPlayed;
+  return (
+    <>
+      <TableCell>{gp}</TableCell>
+      <TableCell>{formatCount(stats.wins, gp)}</TableCell>
+      <TableCell>{formatCount(stats.losses, gp)}</TableCell>
+      <TableCell>{formatGoalsAgainstAverage(stats.goalsAgainstAverage, gp)}</TableCell>
+      <TableCell className="font-semibold text-foreground-primary">
+        {formatSavePercentage(stats.savePercentage, gp)}
+      </TableCell>
+      <TableCell>{formatCount(stats.shutouts, gp)}</TableCell>
+    </>
   );
 }
