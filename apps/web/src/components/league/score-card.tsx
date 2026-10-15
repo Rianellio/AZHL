@@ -32,7 +32,8 @@ export function ScoreCard({ game }: { game: GameDTO }) {
               <Badge variant="neutral">{t(STATUS_LABEL_KEY[game.status])}</Badge>
             )}
             <span className="text-xs text-foreground-secondary">
-              {formatGameDate(game.startTime, intlTag)} &middot; {formatGameTime(game.startTime, intlTag)}
+              {formatGameDate(game.startTime, intlTag)} &middot;{" "}
+              {game.startTimeConfirmed ? formatGameTime(game.startTime, intlTag) : t("game.timeTba")}
             </span>
           </div>
 

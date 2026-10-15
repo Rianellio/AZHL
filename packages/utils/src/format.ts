@@ -1,6 +1,6 @@
 /** "82" -> "82 GP" style helpers for stat-dense standings/box-score tables. */
-export function formatRecord(wins: number, losses: number, otLosses: number): string {
-  return `${wins}-${losses}-${otLosses}`;
+export function formatRecord(wins: number, losses: number, shootoutLosses: number): string {
+  return `${wins}-${losses}-${shootoutLosses}`;
 }
 
 export function formatPlusMinus(value: number): string {

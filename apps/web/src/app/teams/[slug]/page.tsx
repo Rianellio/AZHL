@@ -110,12 +110,13 @@ export default async function TeamDetailPage({
             action={{ labelKey: "teamDetail.fullStandings", href: "/standings" }}
           />
           {standing ? (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-8">
               <StatTile labelKey="teamDetail.rank" value={standing.rank} />
               <StatTile labelKey="standings.colGP" value={standing.gamesPlayed} />
               <StatTile labelKey="standings.colW" value={standing.wins} />
+              <StatTile labelKey="standings.colSOW" value={standing.shootoutWins} />
+              <StatTile labelKey="standings.colSOL" value={standing.shootoutLosses} />
               <StatTile labelKey="standings.colL" value={standing.losses} />
-              <StatTile labelKey="standings.colOTL" value={standing.otLosses} />
               <StatTile labelKey="standings.colPTS" value={standing.points} />
               <StatTile labelKey="teamDetail.gfga" value={`${standing.goalsFor} / ${standing.goalsAgainst}`} />
             </div>

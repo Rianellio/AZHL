@@ -1,16 +1,18 @@
 import { PrismaClient, type PlayerPosition } from "@prisma/client";
+import { recomputeStandings } from "../src/standings";
 
 const prisma = new PrismaClient();
 
 // Azerbaijan Hockey League — the 4 approved club identities, matched to the official crest
 // assets in apps/web/public/logos/ (see also lib/team-logos.ts). Exactly 4 — do not add more
 // without a matching official logo. Name spelling follows each provided crest exactly
-// ("Gala," not "Qala" — the crest itself reads GALA).
+// ("Gala," not "Qala" — the crest itself reads GALA). Clubs have no official home cities —
+// every match is played in Baku (see VENUE), so city is "Baku" for all four.
 const TEAM_SEED = [
   { name: "Qartal", city: "Baku", abbreviation: "QAR", colorPrimary: "#0A0A0B", colorSecondary: "#F5F5F5", colorAccent: "#C1121F" },
   { name: "Ulduz", city: "Baku", abbreviation: "ULD", colorPrimary: "#0F1B2E", colorSecondary: "#F5F5F5", colorAccent: "#2C4A8C" },
-  { name: "Gala", city: "Shaki", abbreviation: "GAL", colorPrimary: "#1A1508", colorSecondary: "#0A0A0B", colorAccent: "#C9A24B" },
-  { name: "Buta", city: "Ganja", abbreviation: "BUT", colorPrimary: "#0C1A10", colorSecondary: "#0A0A0B", colorAccent: "#1F7A4D" },
+  { name: "Gala", city: "Baku", abbreviation: "GAL", colorPrimary: "#1A1508", colorSecondary: "#0A0A0B", colorAccent: "#C9A24B" },
+  { name: "Buta", city: "Baku", abbreviation: "BUT", colorPrimary: "#0C1A10", colorSecondary: "#0A0A0B", colorAccent: "#1F7A4D" },
 ] as const;
 
 const POSITIONS: PlayerPosition[] = ["C", "LW", "RW", "D", "D", "G"];
@@ -51,6 +53,54 @@ function randomBetween(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// Official AZHL 2026/27 regulation: every match is played at one venue in Baku.
+const VENUE = "Heydar Aliyev Sports and Concert Complex";
+
+const SEASON = { label: "2026-27", startDate: "2026-10-20", endDate: "2027-04-06" } as const;
+
+/** Official regular-season calendar: [matchNumber, date, home, away]. Face-off times haven't
+ * been announced — see dateAtNoonUtc. */
+const CALENDAR: readonly (readonly [number, string, string, string])[] = [
+  [1, "2026-10-20", "QARTAL", "ULDUZ"],
+  [2, "2026-10-22", "BUTA", "GALA"],
+  [3, "2026-10-27", "QARTAL", "BUTA"],
+  [4, "2026-10-29", "ULDUZ", "GALA"],
+  [5, "2026-11-03", "GALA", "QARTAL"],
+  [6, "2026-11-05", "ULDUZ", "BUTA"],
+  [7, "2026-11-10", "ULDUZ", "QARTAL"],
+  [8, "2026-11-12", "BUTA", "GALA"],
+  [9, "2026-11-17", "BUTA", "QARTAL"],
+  [10, "2026-11-19", "GALA", "ULDUZ"],
+  [11, "2026-11-24", "QARTAL", "GALA"],
+  [12, "2026-11-26", "BUTA", "ULDUZ"],
+  [13, "2026-12-01", "QARTAL", "ULDUZ"],
+  [14, "2026-12-03", "GALA", "BUTA"],
+  [15, "2026-12-08", "QARTAL", "BUTA"],
+  [16, "2026-12-10", "ULDUZ", "GALA"],
+  [17, "2026-12-15", "GALA", "QARTAL"],
+  [18, "2026-12-17", "ULDUZ", "BUTA"],
+  [19, "2027-01-19", "ULDUZ", "QARTAL"],
+  [20, "2027-01-21", "BUTA", "GALA"],
+  [21, "2027-01-26", "BUTA", "QARTAL"],
+  [22, "2027-01-28", "GALA", "ULDUZ"],
+  [23, "2027-02-02", "QARTAL", "GALA"],
+  [24, "2027-02-04", "BUTA", "ULDUZ"],
+  [25, "2027-02-09", "QARTAL", "ULDUZ"],
+  [26, "2027-02-11", "GALA", "BUTA"],
+  [27, "2027-02-16", "QARTAL", "BUTA"],
+  [28, "2027-02-18", "ULDUZ", "GALA"],
+  [29, "2027-02-23", "GALA", "QARTAL"],
+  [30, "2027-02-25", "ULDUZ", "BUTA"],
+];
+
+const GAMES_PER_TEAM = 15;
+
+/** A date with no announced time is stored at 12:00 UTC so it lands on the same calendar day in
+ * every timezone the site is realistically viewed from; the UI shows "Time TBA" for it. */
+function dateAtNoonUtc(isoDate: string): Date {
+  return new Date(`${isoDate}T12:00:00Z`);
+}
+
 async function main() {
   console.warn("Seeding AZHL database...");
 
@@ -64,15 +114,10 @@ async function main() {
     },
   });
 
-  // AZHL hasn't played a season yet — anchored relative to "now" so the seed always produces
-  // an entirely upcoming schedule (no FINAL or LIVE games, no fabricated results) regardless
-  // of when it's run.
-  const now = new Date();
-  const seasonStart = new Date(now);
-  seasonStart.setDate(seasonStart.getDate() + 14);
-  const seasonEnd = new Date(seasonStart);
-  seasonEnd.setDate(seasonEnd.getDate() + 180);
-  const seasonLabel = `${seasonStart.getFullYear()}-${String(seasonStart.getFullYear() + 1).slice(-2)}`;
+  // Official 2026/27 season dates (UTC midnight — date-only values).
+  const seasonStart = new Date(`${SEASON.startDate}T00:00:00Z`);
+  const seasonEnd = new Date(`${SEASON.endDate}T00:00:00Z`);
+  const seasonLabel = SEASON.label;
 
   const season = await prisma.season.upsert({
     where: { id: `${league.id}-current` },
@@ -100,6 +145,10 @@ async function main() {
     });
     teams.push(team);
 
+    // Jersey numbers below are random, so re-creating a roster on every run would keep adding
+    // players — only seed a team that has none yet.
+    if ((await prisma.player.count({ where: { teamId: team.id } })) > 0) continue;
+
     for (let i = 0; i < POSITIONS.length; i++) {
       const jerseyNumber = randomBetween(2, 98);
       await prisma.player.upsert({
@@ -115,86 +164,44 @@ async function main() {
     }
   }
 
-  // No real AZHL fixture schedule exists yet — the league hasn't announced game dates, venues,
-  // or matchups. A previous pass here auto-generated a full synthetic round-robin (invented
-  // dates, "{city} Ice Arena" venue names never confirmed real). That was presentation-layer
-  // fake data masquerading as a real schedule, so it's gone: the Game table stays empty until
-  // real fixtures are entered, and every schedule/game-center page already renders a clean
-  // empty state for zero games with no further code change needed.
-  await prisma.game.deleteMany({ where: { seasonId: season.id } });
-  const gameCount = 0;
+  // Official regular-season calendar. Upserted by (season, stage, matchNumber) so re-running the
+  // seed refreshes fixtures without duplicating them or wiping results entered later.
+  const teamByName = new Map(teams.map((team) => [team.name.toUpperCase(), team]));
+  const gamesPerTeam = new Map<string, number>();
+  for (const [matchNumber, date, homeName, awayName] of CALENDAR) {
+    const home = teamByName.get(homeName);
+    const away = teamByName.get(awayName);
+    if (!home || !away) throw new Error(`Calendar match ${matchNumber}: unknown team ${homeName} or ${awayName}.`);
+    gamesPerTeam.set(home.id, (gamesPerTeam.get(home.id) ?? 0) + 1);
+    gamesPerTeam.set(away.id, (gamesPerTeam.get(away.id) ?? 0) + 1);
 
-  // No FINAL games exist yet, so every team's standing resolves to zero across the board —
-  // this loop is left in place (rather than hand-writing zero rows) so the day AZHL plays its
-  // first game, standings start computing correctly with no code change needed.
-  const finalGames = await prisma.game.findMany({
-    where: { seasonId: season.id, status: "FINAL" },
-  });
-
-  const table = new Map<
-    string,
-    { wins: number; losses: number; otLosses: number; goalsFor: number; goalsAgainst: number; gamesPlayed: number }
-  >();
-  for (const team of teams) {
-    table.set(team.id, { wins: 0, losses: 0, otLosses: 0, goalsFor: 0, goalsAgainst: 0, gamesPlayed: 0 });
-  }
-
-  for (const game of finalGames) {
-    if (game.homeScore === null || game.awayScore === null) continue;
-    const home = table.get(game.homeTeamId);
-    const away = table.get(game.awayTeamId);
-    if (!home || !away) continue;
-
-    home.gamesPlayed++;
-    away.gamesPlayed++;
-    home.goalsFor += game.homeScore;
-    home.goalsAgainst += game.awayScore;
-    away.goalsFor += game.awayScore;
-    away.goalsAgainst += game.homeScore;
-
-    if (game.homeScore > game.awayScore) {
-      home.wins++;
-      away.losses++;
-    } else {
-      away.wins++;
-      home.losses++;
-    }
-  }
-
-  const ranked = teams
-    .map((team) => ({ team, stats: table.get(team.id)! }))
-    .sort((a, b) => (b.stats.wins * 2 - b.stats.losses) - (a.stats.wins * 2 - a.stats.losses));
-
-  for (let i = 0; i < ranked.length; i++) {
-    const entry = ranked[i];
-    if (!entry) continue;
-    const { team, stats } = entry;
-    await prisma.standing.upsert({
-      where: { seasonId_teamId: { seasonId: season.id, teamId: team.id } },
-      update: {
-        gamesPlayed: stats.gamesPlayed,
-        wins: stats.wins,
-        losses: stats.losses,
-        otLosses: stats.otLosses,
-        points: stats.wins * 2 + stats.otLosses,
-        goalsFor: stats.goalsFor,
-        goalsAgainst: stats.goalsAgainst,
-        rank: i + 1,
-      },
-      create: {
-        seasonId: season.id,
-        teamId: team.id,
-        gamesPlayed: stats.gamesPlayed,
-        wins: stats.wins,
-        losses: stats.losses,
-        otLosses: stats.otLosses,
-        points: stats.wins * 2 + stats.otLosses,
-        goalsFor: stats.goalsFor,
-        goalsAgainst: stats.goalsAgainst,
-        rank: i + 1,
-      },
+    const fixture = {
+      startTime: dateAtNoonUtc(date),
+      startTimeConfirmed: false,
+      venue: VENUE,
+      homeTeamId: home.id,
+      awayTeamId: away.id,
+    };
+    await prisma.game.upsert({
+      where: { seasonId_stage_matchNumber: { seasonId: season.id, stage: "REGULAR_SEASON", matchNumber } },
+      update: fixture,
+      create: { ...fixture, seasonId: season.id, stage: "REGULAR_SEASON", matchNumber, status: "SCHEDULED" },
     });
   }
+  for (const team of teams) {
+    if (gamesPerTeam.get(team.id) !== GAMES_PER_TEAM) {
+      throw new Error(`${team.name} has ${gamesPerTeam.get(team.id) ?? 0} calendar games, expected ${GAMES_PER_TEAM}.`);
+    }
+  }
+  // Drop any game for this season that isn't part of the official calendar (e.g. rows created
+  // before matchNumber existed).
+  await prisma.game.deleteMany({
+    where: { seasonId: season.id, stage: "REGULAR_SEASON", OR: [{ matchNumber: null }, { matchNumber: { gt: CALENDAR.length } }] },
+  });
+  const gameCount = CALENDAR.length;
+
+  // Standings are derived — one shared implementation of the regulation's points/tiebreak rules.
+  await recomputeStandings(season.id, prisma);
 
   // No real AZHL news content exists yet — the previous seed here invented five demo articles
   // (a fake interview, a fake signing, even a fake club "Şimşək" that isn't in TEAM_SEED).

@@ -7,7 +7,7 @@ import { TeamLogo } from "./team-logo";
 import { useTranslation } from "@/lib/i18n/use-translation";
 
 export function NextGameRow({ game }: { game: GameDTO }) {
-  const { intlTag } = useTranslation();
+  const { t, intlTag } = useTranslation();
   const date = new Date(game.startTime);
   const dayFormatter = new Intl.DateTimeFormat(intlTag, { day: "2-digit" });
   const monthFormatter = new Intl.DateTimeFormat(intlTag, { month: "short" });
@@ -38,7 +38,7 @@ export function NextGameRow({ game }: { game: GameDTO }) {
           <span className="uppercase">{game.homeTeam.name}</span>
         </div>
         <div className="flex items-center gap-3 text-xs text-foreground-secondary">
-          <span>{timeFormatter.format(date)}</span>
+          <span>{game.startTimeConfirmed ? timeFormatter.format(date) : t("game.timeTba")}</span>
           <span className="uppercase tracking-wide">{game.venue}</span>
         </div>
       </div>
