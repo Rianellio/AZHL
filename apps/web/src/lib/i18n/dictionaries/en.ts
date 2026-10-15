@@ -92,6 +92,7 @@ export const en = {
   "teamDetail.standingsWillAppear": "Standings will appear once the season begins.",
   "teamDetail.rank": "Rank",
   "teamDetail.gfga": "GF / GA",
+  "teamDetail.teamLeaders": "Team Leaders",
 
   // Full squad groups + table
   "fullSquad.goalkeepers": "Goalkeepers",
@@ -99,6 +100,7 @@ export const en = {
   "fullSquad.forwards": "Forwards",
   "fullSquad.colNum": "#",
   "fullSquad.colPos": "Pos",
+  "fullSquad.colPlayer": "Player",
 
   // Players list page
   "players.title": "Players",
@@ -134,6 +136,16 @@ export const en = {
   "playerDetail.dayAgo": "1 day ago",
   "playerDetail.daysAgo": "{n} days ago",
   "playerDetail.countrySuffix": "Azerbaijan",
+  "playerDetail.penaltyMinutes": "Penalty Minutes",
+  "playerDetail.wins": "Wins",
+  "playerDetail.losses": "Losses",
+  "playerDetail.goalsAgainstAverage": "Goals Against Avg",
+  "playerDetail.savePercentage": "Save Percentage",
+  "playerDetail.shutouts": "Shutouts",
+  "playerDetail.colPim": "PIM",
+  "playerDetail.colGaa": "GAA",
+  "playerDetail.colSvPct": "SV%",
+  "playerDetail.colSo": "SO",
 
   // Schedule page
   "schedule.title": "Schedule",

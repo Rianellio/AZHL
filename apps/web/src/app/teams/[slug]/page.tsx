@@ -9,6 +9,8 @@ import { RinkRoster } from "@/components/league/rink-roster";
 import { FullSquad } from "@/components/league/full-squad";
 import { TeamLogo } from "@/components/league/team-logo";
 import { EmptyState } from "@/components/league/empty-state";
+import { StatLeaderboardCard } from "@/components/league/stat-leaderboard-card";
+import { topGoaliesBy, topSkatersBy } from "@/lib/stat-leaders";
 
 export const revalidate = 60;
 
@@ -38,6 +40,8 @@ export default async function TeamDetailPage({
   ]);
 
   const standing = standings.find((s) => s.team.id === team.id);
+  const skaters = players.filter((player) => player.position !== "G");
+  const goalies = players.filter((player) => player.position === "G");
 
   return (
     <div className="flex flex-col">
@@ -56,6 +60,37 @@ export default async function TeamDetailPage({
         <section>
           <SectionHeader titleKey="teamDetail.startingLineup" />
           <RinkRoster players={players} accent={team.colors.accent} />
+        </section>
+
+        {/* Team leaders — same nonzero-only rule as /stats, so this is an empty state until real stats exist */}
+        <section>
+          <SectionHeader titleKey="teamDetail.teamLeaders" />
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <StatLeaderboardCard
+              titleKey="stats.points"
+              abbreviationKey="playerDetail.colPts"
+              entries={topSkatersBy(skaters, "points", 3)}
+              emptyMessageKey="stats.emptyPoints"
+            />
+            <StatLeaderboardCard
+              titleKey="stats.goals"
+              abbreviationKey="playerDetail.colG"
+              entries={topSkatersBy(skaters, "goals", 3)}
+              emptyMessageKey="stats.emptyGoals"
+            />
+            <StatLeaderboardCard
+              titleKey="stats.assists"
+              abbreviationKey="playerDetail.colA"
+              entries={topSkatersBy(skaters, "assists", 3)}
+              emptyMessageKey="stats.emptyAssists"
+            />
+            <StatLeaderboardCard
+              titleKey="stats.goalies"
+              abbreviationKey="playerDetail.colSvPct"
+              entries={topGoaliesBy(goalies, "savePercentage", 3)}
+              emptyMessageKey="stats.emptyGoalies"
+            />
+          </div>
         </section>
 
         {/* Full squad, grouped by position */}
