@@ -3,9 +3,11 @@ import { inter, oswald } from "@/lib/fonts";
 import { Shell } from "@/components/layout/shell";
 import { LocaleProvider } from "@/lib/i18n/locale-context";
 import { SITE_URL } from "@/lib/site-url";
+import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
+import { serverT } from "@/lib/i18n/server";
 import "./globals.css";
 
-const DESCRIPTION = "Standings, schedule, scores, and news for the Azerbaijan Hockey League.";
+const DESCRIPTION = serverT("meta.description");
 
 export const metadata: Metadata = {
   metadataBase: SITE_URL,
@@ -25,7 +27,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${oswald.variable}`}>
+    <html lang={DEFAULT_LOCALE} className={`${inter.variable} ${oswald.variable}`}>
       <body>
         <LocaleProvider>
           <Shell>{children}</Shell>

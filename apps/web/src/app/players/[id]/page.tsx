@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { serverT } from "@/lib/i18n/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { User } from "lucide-react";
@@ -24,7 +25,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const player = await getPlayerById(id);
-  return { title: player ? player.fullName : "Player not found" };
+  return { title: player ? player.fullName : serverT("notFound.title") };
 }
 
 export default async function PlayerProfilePage({

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { serverT } from "@/lib/i18n/server";
 import { getCurrentSeasonSchedule } from "@/lib/server/services/schedule.service";
 import { getLeagueDateParts } from "@/lib/i18n/format-date";
 import { ScheduleList } from "@/components/league/schedule-list";
@@ -8,7 +9,7 @@ import { T } from "@/components/ui/t";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Schedule",
+  title: serverT("meta.schedule"),
 };
 
 export default async function SchedulePage({

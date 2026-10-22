@@ -265,6 +265,17 @@ export const en = {
   "error.title": "Something went wrong",
   "error.description": "We couldn't load this page. Please try again in a moment.",
   "error.retry": "Try again",
+  "meta.description": "Standings, schedule, scores, and news for the Azerbaijan Hockey League.",
+  "meta.contacts": "Contact",
+  "meta.league": "League",
+  "meta.media": "Media",
+  "meta.news": "News",
+  "meta.players": "Players",
+  "meta.schedule": "Schedule",
+  "meta.standings": "Standings",
+  "meta.stats": "Statistics",
+  "meta.teams": "Teams",
+  "meta.game": "{away} vs {home}",
 } as const;
 
 export type TranslationKey = keyof typeof en;

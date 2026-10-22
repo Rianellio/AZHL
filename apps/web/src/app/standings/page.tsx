@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { serverT } from "@/lib/i18n/server";
 import { getCurrentSeasonStandings } from "@/lib/server/services/standings.service";
 import { StandingsTable } from "@/components/league/standings-table";
 import { T } from "@/components/ui/t";
@@ -7,7 +8,7 @@ import { EmptyState } from "@/components/league/empty-state";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Standings",
+  title: serverT("meta.standings"),
 };
 
 export default async function StandingsPage() {

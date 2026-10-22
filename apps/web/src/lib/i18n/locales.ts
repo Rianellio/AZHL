@@ -1,9 +1,4 @@
-/**
- * The three languages AZHL's UI will eventually be fully translated into. Only the selector
- * (see language-selector.tsx) is wired up today — no dictionary/translation lookup exists yet,
- * so page copy stays English regardless of the active locale. `code` values are the keys a
- * future translation system would key its dictionaries on.
- */
+/** The three languages AZHL's UI is translated into; `code` keys the dictionaries in ./dictionaries. */
 export const LOCALES = [
   { code: "en", label: "EN", nativeLabel: "English" },
   { code: "az", label: "AZ", nativeLabel: "Azərbaycan dili" },
@@ -12,7 +7,12 @@ export const LOCALES = [
 
 export type LocaleCode = (typeof LOCALES)[number]["code"];
 
-export const DEFAULT_LOCALE: LocaleCode = "en";
+/**
+ * The language the server renders (and search engines index): `<html lang>`, the first paint of
+ * every page, and metadata titles. A visitor's saved choice (localStorage) switches the UI after
+ * hydration. Changing the site's default language is this one line.
+ */
+export const DEFAULT_LOCALE: LocaleCode = "ru";
 
 export function isLocaleCode(value: string): value is LocaleCode {
   return LOCALES.some((locale) => locale.code === value);

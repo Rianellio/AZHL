@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { serverT } from "@/lib/i18n/server";
 import { getAllPlayers } from "@/lib/server/services/player.service";
 import { PlayerCard } from "@/components/league/player-card";
 import { T } from "@/components/ui/t";
@@ -7,7 +8,7 @@ import { EmptyState } from "@/components/league/empty-state";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Players",
+  title: serverT("meta.players"),
 };
 
 export default async function PlayersPage() {

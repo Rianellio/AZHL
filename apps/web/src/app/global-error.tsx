@@ -1,5 +1,7 @@
 "use client";
 
+import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
+
 /** Last-resort boundary for errors in the root layout itself — it replaces the layout, so no
  * providers or styles are available; the message is plain inline-styled text in all three locales. */
 export default function GlobalError({
@@ -9,7 +11,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   return (
-    <html lang="az">
+    <html lang={DEFAULT_LOCALE}>
       <body
         style={{
           margin: 0,

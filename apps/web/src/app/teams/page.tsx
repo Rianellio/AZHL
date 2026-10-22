@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import { serverT } from "@/lib/i18n/server";
 import { getAllTeams } from "@/lib/server/services/team.service";
 import { TeamSelectPanel } from "@/components/league/team-select-panel";
 
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Teams",
+  title: serverT("meta.teams"),
 };
 
 export default async function TeamsPage() {

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { serverT } from "@/lib/i18n/server";
 import { notFound } from "next/navigation";
 import { getGameById } from "@/lib/server/services/schedule.service";
 import { Badge } from "@/components/ui/badge";
@@ -28,8 +29,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const game = await getGameById(id);
-  if (!game) return { title: "Game not found" };
-  return { title: `${game.awayTeam.abbreviation} @ ${game.homeTeam.abbreviation}` };
+  if (!game) return { title: serverT("notFound.title") };
+  return { title: serverT("meta.game", { away: game.awayTeam.name, home: game.homeTeam.name }) };
 }
 
 export default async function GameCenterPage({

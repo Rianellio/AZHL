@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { serverT } from "@/lib/i18n/server";
 import type { StandingDTO } from "@azhl/types";
 import { getAllPlayers } from "@/lib/server/services/player.service";
 import { getCurrentSeasonStandings } from "@/lib/server/services/standings.service";
@@ -10,7 +11,7 @@ import { T } from "@/components/ui/t";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Statistics",
+  title: serverT("meta.stats"),
 };
 
 function topTeamsBy(

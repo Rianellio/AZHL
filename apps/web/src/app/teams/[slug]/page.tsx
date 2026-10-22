@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { serverT } from "@/lib/i18n/server";
 import { notFound } from "next/navigation";
 import { getTeamBySlug } from "@/lib/server/services/team.service";
 import { getPlayersByTeamId } from "@/lib/server/services/player.service";
@@ -21,7 +22,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const team = await getTeamBySlug(slug);
-  return { title: team ? team.name : "Team not found" };
+  return { title: team ? team.name : serverT("notFound.title") };
 }
 
 /** Deliberately minimal — logo, name, rink, squad, stats only. See .claude/roadmap.md for when club info/history returns with real data. */

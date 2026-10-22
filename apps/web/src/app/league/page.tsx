@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { serverT } from "@/lib/i18n/server";
 import Link from "next/link";
 import { Users, CalendarDays, Swords, Crown, Trophy } from "lucide-react";
 import { getAllTeams } from "@/lib/server/services/team.service";
@@ -13,7 +14,7 @@ import type { TranslationKey } from "@/lib/i18n/dictionaries";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "League",
+  title: serverT("meta.league"),
 };
 
 /** Structural description of how AZHL competition works — no results or history implied, just the format. */
