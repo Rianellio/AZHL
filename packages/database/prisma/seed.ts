@@ -56,6 +56,13 @@ function randomBetween(min: number, max: number): number {
 // Official AZHL 2026/27 regulation: every match is played at one venue in Baku.
 const VENUE = "Heydar Aliyev Sports and Concert Complex";
 
+/** Demo articles created by earlier versions of this seed — see the cleanup at the end of main(). */
+const LEGACY_DEMO_ARTICLE_SLUGS = [
+  "azhl-2025-26-season-preview",
+  "glacier-open-season-strong",
+  "league-announces-showcase-weekend",
+];
+
 const SEASON = { label: "2026-27", startDate: "2026-10-20", endDate: "2027-04-06" } as const;
 
 /** Official regular-season calendar: [matchNumber, date, home, away]. Face-off times haven't
@@ -203,13 +210,10 @@ async function main() {
   // Standings are derived — one shared implementation of the regulation's points/tiebreak rules.
   await recomputeStandings(season.id, prisma);
 
-  // No real AZHL news content exists yet — the previous seed here invented five demo articles
-  // (a fake interview, a fake signing, even a fake club "Şimşək" that isn't in TEAM_SEED).
-  // Fabricated presentation content, not real infrastructure — removed. Any of those articles
-  // left over from a prior seed run are cleared explicitly since upsert-by-slug alone wouldn't
-  // delete rows no longer in this script. The News table stays empty until real articles are
-  // entered through the backend/CMS; the news pages already render a clean empty state.
-  await prisma.newsArticle.deleteMany({});
+  // No real AZHL news content exists yet, and the seed creates none. Earlier seeds invented demo
+  // articles; only those known demo slugs are removed — never `deleteMany({})`, which would also
+  // wipe real articles entered later through the backend/CMS.
+  await prisma.newsArticle.deleteMany({ where: { slug: { in: LEGACY_DEMO_ARTICLE_SLUGS } } });
 
   console.warn(`Seed complete: 1 league, 1 season, ${teams.length} teams, ${gameCount} games, 0 articles.`);
 }
