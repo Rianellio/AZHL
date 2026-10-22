@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import type { GameDTO } from "@azhl/types";
-import { formatGameDate, formatGameTime } from "@azhl/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TeamLogo } from "./team-logo";
@@ -17,7 +16,7 @@ const STATUS_LABEL_KEY: Record<GameDTO["status"], TranslationKey> = {
 };
 
 export function ScoreCard({ game }: { game: GameDTO }) {
-  const { t, intlTag } = useTranslation();
+  const { t, formatGameDate, formatGameTime } = useTranslation();
 
   return (
     <Link href={`/game/${game.id}`} className="block">
@@ -31,9 +30,11 @@ export function ScoreCard({ game }: { game: GameDTO }) {
             ) : (
               <Badge variant="neutral">{t(STATUS_LABEL_KEY[game.status])}</Badge>
             )}
-            <span className="text-xs text-foreground-secondary">
-              {formatGameDate(game.startTime, intlTag)} &middot;{" "}
-              {game.startTimeConfirmed ? formatGameTime(game.startTime, intlTag) : t("game.timeTba")}
+            {/* Compact: the date alone until the face-off time is announced ("Time TBA" lives on
+                the schedule's date headings and the game page). */}
+            <span className="whitespace-nowrap text-xs text-foreground-secondary">
+              {formatGameDate(game.startTime)}
+              {game.startTimeConfirmed && <> &middot; {formatGameTime(game.startTime)}</>}
             </span>
           </div>
 
@@ -41,8 +42,6 @@ export function ScoreCard({ game }: { game: GameDTO }) {
             <TeamRow team={game.awayTeam} score={game.awayScore} />
             <TeamRow team={game.homeTeam} score={game.homeScore} />
           </div>
-
-          <p className="text-xs text-foreground-secondary">{game.venue}</p>
         </CardContent>
       </Card>
     </Link>

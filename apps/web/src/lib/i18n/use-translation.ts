@@ -5,6 +5,7 @@ import { useLocale } from "./locale-context";
 import { DICTIONARIES } from "./dictionaries";
 import type { TranslationKey } from "./dictionaries";
 import type { LocaleCode } from "./locales";
+import { formatLeagueTime, formatLocalizedDate, formatLocalizedGameDate } from "./format-date";
 
 /** BCP-47 tags handed to `Intl.*` — kept separate from the two-letter `LocaleCode` used
  * everywhere else, since `Intl` needs a full region tag to pick correct date/number formatting
@@ -37,17 +38,24 @@ export function useTranslation() {
       return interpolate(dictionary[key], vars);
     }
 
+    /** Always in Baku time; az goes through a fixed name lookup (see ./format-date.ts). */
     function formatDate(date: Date | string, options?: Intl.DateTimeFormatOptions): string {
-      const value = typeof date === "string" ? new Date(date) : date;
-      return new Intl.DateTimeFormat(intlTag, options ?? { month: "long", day: "numeric", year: "numeric" }).format(
-        value,
-      );
+      return formatLocalizedDate(date, locale, intlTag, options ?? { month: "long", day: "numeric", year: "numeric" });
+    }
+
+    function formatGameDate(iso: string): string {
+      return formatLocalizedGameDate(iso, locale, intlTag);
+    }
+
+    /** "19:30" in Baku time — the same in every locale. */
+    function formatGameTime(iso: string): string {
+      return formatLeagueTime(iso);
     }
 
     function formatNumber(value: number, options?: Intl.NumberFormatOptions): string {
       return new Intl.NumberFormat(intlTag, options).format(value);
     }
 
-    return { t, locale, intlTag, formatDate, formatNumber };
+    return { t, locale, intlTag, formatDate, formatGameDate, formatGameTime, formatNumber };
   }, [locale, intlTag, dictionary]);
 }

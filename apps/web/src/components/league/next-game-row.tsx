@@ -7,11 +7,8 @@ import { TeamLogo } from "./team-logo";
 import { useTranslation } from "@/lib/i18n/use-translation";
 
 export function NextGameRow({ game }: { game: GameDTO }) {
-  const { t, intlTag } = useTranslation();
+  const { formatDate, formatGameTime } = useTranslation();
   const date = new Date(game.startTime);
-  const dayFormatter = new Intl.DateTimeFormat(intlTag, { day: "2-digit" });
-  const monthFormatter = new Intl.DateTimeFormat(intlTag, { month: "short" });
-  const timeFormatter = new Intl.DateTimeFormat(intlTag, { hour: "2-digit", minute: "2-digit", hour12: false });
 
   return (
     <Link
@@ -20,10 +17,10 @@ export function NextGameRow({ game }: { game: GameDTO }) {
     >
       <div className="flex w-12 shrink-0 flex-col items-center leading-none">
         <span className="font-display text-2xl font-bold text-foreground-primary">
-          {dayFormatter.format(date)}
+          {formatDate(date, { day: "2-digit" })}
         </span>
         <span className="text-xs font-medium uppercase tracking-wide text-foreground-secondary">
-          {monthFormatter.format(date)}
+          {formatDate(date, { month: "short" })}
         </span>
       </div>
 
@@ -37,10 +34,11 @@ export function NextGameRow({ game }: { game: GameDTO }) {
           <TeamLogo teamSlug={game.homeTeam.slug} teamName={game.homeTeam.name} size={24} />
           <span className="uppercase">{game.homeTeam.name}</span>
         </div>
-        <div className="flex items-center gap-3 text-xs text-foreground-secondary">
-          <span>{game.startTimeConfirmed ? timeFormatter.format(date) : t("game.timeTba")}</span>
-          <span className="uppercase tracking-wide">{game.venue}</span>
-        </div>
+        {game.startTimeConfirmed && (
+          <span className="whitespace-nowrap text-xs text-foreground-secondary">
+            {formatGameTime(game.startTime)}
+          </span>
+        )}
       </div>
 
       <ChevronRight className="h-5 w-5 shrink-0 text-foreground-tertiary" />
