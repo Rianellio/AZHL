@@ -256,6 +256,9 @@ export const en = {
   "notFound.title": "Page not found",
   "notFound.description": "The page you're looking for doesn't exist.",
   "notFound.backHome": "Back to home",
+  "error.title": "Something went wrong",
+  "error.description": "We couldn't load this page. Please try again in a moment.",
+  "error.retry": "Try again",
 } as const;
 
 export type TranslationKey = keyof typeof en;

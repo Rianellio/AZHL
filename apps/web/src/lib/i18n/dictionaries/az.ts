@@ -230,4 +230,7 @@ export const az = {
   "notFound.title": "Səhifə tapılmadı",
   "notFound.description": "Axtardığınız səhifə mövcud deyil.",
   "notFound.backHome": "Ana səhifəyə qayıt",
+  "error.title": "Xəta baş verdi",
+  "error.description": "Səhifəni yükləmək mümkün olmadı. Bir az sonra yenidən cəhd edin.",
+  "error.retry": "Yenidən cəhd et",
 } satisfies Record<TranslationKey, string>;

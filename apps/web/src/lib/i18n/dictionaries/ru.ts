@@ -230,4 +230,7 @@ export const ru = {
   "notFound.title": "Страница не найдена",
   "notFound.description": "Страница, которую вы ищете, не существует.",
   "notFound.backHome": "Вернуться на главную",
+  "error.title": "Произошла ошибка",
+  "error.description": "Не удалось загрузить страницу. Попробуйте ещё раз чуть позже.",
+  "error.retry": "Попробовать снова",
 } satisfies Record<TranslationKey, string>;
