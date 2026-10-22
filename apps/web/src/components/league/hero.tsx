@@ -7,21 +7,20 @@ import { useTranslation } from "@/lib/i18n/use-translation";
 import type { TranslationKey } from "@/lib/i18n/dictionaries";
 
 export interface HeroProps {
-  /** Literal, untranslated eyebrow text — used for proper nouns (e.g. the league's own name on
-   * the League page) that stay identical across locales. Mutually exclusive with
-   * `seasonYearRange`. */
-  eyebrow?: string;
+  /** Translated eyebrow text. Mutually exclusive with `seasonYearRange`. */
+  eyebrowKey?: TranslationKey;
   /** e.g. "2026-2027" — Hero appends the translated word for "Season" itself, since the
    * composition needs `t()` and the Server Component caller can't call hooks. */
-  seasonYearRange?: string;
-  titleLines: string[];
+  seasonYearRange?: string | undefined;
+  /** Translated title; each "\n" in the dictionary value starts a new display line. */
+  titleKey: TranslationKey;
   taglineKey?: TranslationKey;
   cta?: { labelKey: TranslationKey; href: string };
 }
 
-export function Hero({ eyebrow, seasonYearRange, titleLines, taglineKey, cta }: HeroProps) {
+export function Hero({ eyebrowKey, seasonYearRange, titleKey, taglineKey, cta }: HeroProps) {
   const { t } = useTranslation();
-  const eyebrowText = seasonYearRange ? `${seasonYearRange} ${t("home.seasonSuffix")}` : eyebrow;
+  const eyebrowText = seasonYearRange ? `${seasonYearRange} ${t("home.seasonSuffix")}` : eyebrowKey && t(eyebrowKey);
 
   return (
     <section className="relative flex h-[600px] items-end overflow-hidden border-b border-border-subtle lg:h-[660px]">
@@ -36,7 +35,7 @@ export function Hero({ eyebrow, seasonYearRange, titleLines, taglineKey, cta }: 
       <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-5 px-6 pb-16">
         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">{eyebrowText}</p>
         <h1 className="max-w-2xl font-display text-6xl font-bold uppercase leading-[0.95] tracking-tight text-foreground-primary lg:text-7xl">
-          {titleLines.map((line) => (
+          {t(titleKey).split("\n").map((line) => (
             <span key={line} className="block">
               {line}
             </span>

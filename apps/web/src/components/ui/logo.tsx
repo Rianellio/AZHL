@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-/** Real intrinsic dimensions of /public/brand/azhl-logo.png — used so the browser can size
+/** Real intrinsic dimensions of /public/brand/azhl-logo.webp — used so the browser can size
  * width automatically from a height-only Tailwind class without distorting the image. */
 const LOGO_WIDTH = 1124;
 const LOGO_HEIGHT = 798;
@@ -24,7 +24,7 @@ export interface LogoProps {
 export function Logo({ className, priority = false }: LogoProps) {
   return (
     <Image
-      src="/brand/azhl-logo.png"
+      src="/brand/azhl-logo.webp"
       alt="AZHL — Azerbaijan Hockey League"
       width={LOGO_WIDTH}
       height={LOGO_HEIGHT}

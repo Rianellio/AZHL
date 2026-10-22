@@ -9,6 +9,7 @@ import { GameDate, GameTime } from "@/components/league/game-date";
 import { T } from "@/components/ui/t";
 import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow } from "@/components/ui/table";
 import type { GameDTO } from "@azhl/types";
+import { isAwaitingResult } from "@/lib/game-status";
 import type { TranslationKey } from "@/lib/i18n/dictionaries";
 
 export const revalidate = 60;
@@ -46,11 +47,17 @@ export default async function GameCenterPage({
         {game.status === "LIVE" ? (
           <Badge variant="live">
             <LiveDot />
-            <T k={STATUS_LABEL_KEY[game.status]!} /> &middot; <T k="game.period" /> {game.period ?? 1}
+            <T k={STATUS_LABEL_KEY[game.status]!} />
+            {game.period !== null && (
+              <>
+                {" "}
+                &middot; <T k="game.period" /> {game.period}
+              </>
+            )}
           </Badge>
         ) : (
           <Badge variant="neutral">
-            <T k={STATUS_LABEL_KEY[game.status]!} />
+            <T k={isAwaitingResult(game) ? "status.awaitingResult" : STATUS_LABEL_KEY[game.status]!} />
           </Badge>
         )}
         <span className="text-sm text-foreground-secondary">

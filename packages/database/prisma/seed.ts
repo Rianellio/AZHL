@@ -18,7 +18,7 @@ const TEAM_SEED = [
 const POSITIONS: PlayerPosition[] = ["C", "LW", "RW", "D", "D", "G"];
 
 // Deterministic Azerbaijani name pool — combined by index so re-running the seed produces
-// the same roster every time (no Math.random() in identity data, only in game outcomes).
+// the same roster every time (no Math.random() anywhere).
 const FIRST_NAMES = [
   "Ali", "Elvin", "Ruslan", "Tural", "Kamran", "Rashad", "Farid", "Orkhan",
   "Anar", "Elnur", "Vusal", "Emin", "Nihat", "Samir", "Elshan", "Murad",
@@ -49,8 +49,11 @@ function playerName(seed: number): string {
   return `${first} ${last}`;
 }
 
-function randomBetween(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+/** Deterministic jersey number (2–98) for roster slot `slot` of team `teamIndex`. 13 and 97 are
+ * coprime, so the 6 slots of one team never collide (unlike the former random numbers, which
+ * did, and silently dropped players through the teamId+jerseyNumber upsert). */
+function jerseyNumberFor(teamIndex: number, slot: number): number {
+  return ((teamIndex * 37 + slot * 13) % 97) + 2;
 }
 
 // Official AZHL 2026/27 regulation: every match is played at one venue in Baku.
@@ -140,8 +143,7 @@ async function main() {
   });
 
   const teams = [];
-  let playerSeed = 0;
-  for (const teamData of TEAM_SEED) {
+  for (const [teamIndex, teamData] of TEAM_SEED.entries()) {
     const team = await prisma.team.upsert({
       where: { abbreviation: teamData.abbreviation },
       update: { ...teamData },
@@ -152,21 +154,27 @@ async function main() {
     });
     teams.push(team);
 
-    // Jersey numbers below are random, so re-creating a roster on every run would keep adding
-    // players — only seed a team that has none yet.
-    if ((await prisma.player.count({ where: { teamId: team.id } })) > 0) continue;
+    // Fill each roster slot (one player per entry in POSITIONS) only if the team doesn't already
+    // have a player there — re-running never duplicates players or touches real roster edits, and
+    // repairs teams left short by earlier seeds.
+    const existing = await prisma.player.findMany({ where: { teamId: team.id } });
+    const missingByPosition = new Map<PlayerPosition, number>();
+    for (const position of POSITIONS) missingByPosition.set(position, (missingByPosition.get(position) ?? 0) + 1);
+    for (const player of existing) {
+      missingByPosition.set(player.position, (missingByPosition.get(player.position) ?? 0) - 1);
+    }
+    const usedNumbers = new Set(existing.map((player) => player.jerseyNumber));
 
-    for (let i = 0; i < POSITIONS.length; i++) {
-      const jerseyNumber = randomBetween(2, 98);
-      await prisma.player.upsert({
-        where: { teamId_jerseyNumber: { teamId: team.id, jerseyNumber } },
-        update: {},
-        create: {
-          teamId: team.id,
-          fullName: playerName(playerSeed++),
-          jerseyNumber,
-          position: POSITIONS[i] ?? "C",
-        },
+    for (const [slot, position] of POSITIONS.entries()) {
+      if ((missingByPosition.get(position) ?? 0) <= 0) continue;
+      missingByPosition.set(position, (missingByPosition.get(position) ?? 0) - 1);
+
+      let jerseyNumber = jerseyNumberFor(teamIndex, slot);
+      while (usedNumbers.has(jerseyNumber)) jerseyNumber = ((jerseyNumber - 1) % 97) + 2; // next in 2–98
+      usedNumbers.add(jerseyNumber);
+
+      await prisma.player.create({
+        data: { teamId: team.id, fullName: playerName(teamIndex * POSITIONS.length + slot), jerseyNumber, position },
       });
     }
   }
@@ -189,11 +197,21 @@ async function main() {
       homeTeamId: home.id,
       awayTeamId: away.id,
     };
-    await prisma.game.upsert({
-      where: { seasonId_stage_matchNumber: { seasonId: season.id, stage: "REGULAR_SEASON", matchNumber } },
-      update: fixture,
-      create: { ...fixture, seasonId: season.id, stage: "REGULAR_SEASON", matchNumber, status: "SCHEDULED" },
-    });
+    const where = { seasonId_stage_matchNumber: { seasonId: season.id, stage: "REGULAR_SEASON" as const, matchNumber } };
+    const current = await prisma.game.findUnique({ where, select: { startTimeConfirmed: true } });
+    if (!current) {
+      await prisma.game.create({
+        data: { ...fixture, seasonId: season.id, stage: "REGULAR_SEASON", matchNumber, status: "SCHEDULED" },
+      });
+    } else {
+      // A face-off time announced after seeding (startTimeConfirmed) is kept, not reset to the
+      // calendar's date-only placeholder.
+      const { startTime, startTimeConfirmed, ...rest } = fixture;
+      await prisma.game.update({
+        where,
+        data: current.startTimeConfirmed ? rest : { ...rest, startTime, startTimeConfirmed },
+      });
+    }
   }
   for (const team of teams) {
     if (gamesPerTeam.get(team.id) !== GAMES_PER_TEAM) {

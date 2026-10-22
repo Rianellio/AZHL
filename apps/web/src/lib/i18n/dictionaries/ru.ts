@@ -14,6 +14,8 @@ export const ru = {
   "nav.join": "ПРИСОЕДИНИТЬСЯ К AZHL",
   "nav.language": "Язык",
   "nav.primaryLabel": "Основная навигация",
+  "nav.closeMenu": "Закрыть меню",
+  "nav.openMenu": "Открыть меню",
 
   "schedule.scheduleView": "Вид расписания",
 
@@ -23,8 +25,7 @@ export const ru = {
   "footer.information": "Информация",
   "footer.followUs": "Мы в соцсетях",
   "footer.aboutAzhl": "О AZHL",
-  "footer.rulesRegulations": "Правила и регламент",
-  "footer.committees": "Комитеты",
+  "footer.players": "Игроки",
   "footer.partners": "Партнёры",
   "footer.copyright": "© {year} AZHL. Все права защищены.",
 
@@ -45,9 +46,12 @@ export const ru = {
   "home.noArticles": "Статьи ещё не опубликованы.",
   "home.noTopPlayers": "Статистика игроков пока недоступна.",
   "home.heroTagline": "Одна лига. Одна цель.",
+  "home.heroTitle": "Азербайджанская\nхоккейная лига",
   "home.seasonSuffix": "сезон",
 
   "league.heroTagline": "Четыре клуба. Один чемпион.",
+  "league.heroEyebrow": "Азербайджанская хоккейная лига",
+  "league.heroTitle": "О\nлиге",
   "league.aboutTitle": "О AZHL",
   "league.aboutP1":
     "AZHL (Azerbaijan Hockey League) — хоккейная лига, созданная для развития и популяризации хоккея с шайбой в Азербайджане.",
@@ -70,7 +74,7 @@ export const ru = {
   "league.comingSoon": "Скоро",
   "league.trophyBlurb": "Кубок чемпиона AZHL будет представлен перед первым Финалом чемпионата лиги.",
 
-  "teamDetail.startingLineup": "Стартовый состав",
+  "teamDetail.rosterByPosition": "Состав по позициям",
   "teamDetail.fullSquad": "Полный состав",
   "teamDetail.teamStatistics": "Статистика команды",
   "teamDetail.fullStandings": "Полная турнирная таблица",
@@ -205,6 +209,7 @@ export const ru = {
   "game.home": "Хозяева",
   "game.period": "Период",
   "game.timeTba": "Время уточняется",
+  "game.versus": "—",
   "game.shootout": "Серия буллитов",
   "game.shootoutAbbr": "Б",
   "game.periodScores": "Счёт по периодам",
@@ -217,6 +222,7 @@ export const ru = {
   "status.final": "Финал",
   "status.finished": "Завершена",
   "status.postponed": "Отложена",
+  "status.awaitingResult": "Ждём результат",
 
   "position.center": "Центральный нападающий",
   "position.leftWing": "Левый нападающий",

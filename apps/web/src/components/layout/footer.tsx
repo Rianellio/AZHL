@@ -9,14 +9,14 @@ import type { TranslationKey } from "@/lib/i18n/dictionaries";
 
 const LEAGUE_LINKS: { href: string; labelKey: TranslationKey }[] = [
   { href: "/league", labelKey: "footer.aboutAzhl" },
-  { href: "/league", labelKey: "footer.rulesRegulations" },
-  { href: "/league", labelKey: "footer.committees" },
+  { href: "/teams", labelKey: "nav.teams" },
+  { href: "/players", labelKey: "footer.players" },
 ];
 
 const INFO_LINKS: { href: string; labelKey: TranslationKey }[] = [
   { href: "/news", labelKey: "nav.news" },
   { href: "/media", labelKey: "nav.media" },
-  { href: "/partners", labelKey: "footer.partners" },
+  { href: "/league#partners", labelKey: "footer.partners" },
 ];
 
 export function Footer() {

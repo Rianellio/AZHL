@@ -15,7 +15,7 @@ export function HeroLogo() {
   return (
     <div className="relative flex w-full items-center justify-center">
       <Image
-        src="/brand/azhl-logo.png"
+        src="/brand/azhl-logo.webp"
         alt=""
         width={1124}
         height={798}
@@ -24,7 +24,7 @@ export function HeroLogo() {
         className="absolute inset-0 h-full w-full scale-110 object-contain opacity-40 blur-2xl"
       />
       <Image
-        src="/brand/azhl-logo.png"
+        src="/brand/azhl-logo.webp"
         alt="AZHL — Azerbaijan Hockey League"
         width={1124}
         height={798}

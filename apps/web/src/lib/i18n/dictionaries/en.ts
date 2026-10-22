@@ -20,6 +20,8 @@ export const en = {
   "nav.join": "Join AZHL",
   "nav.language": "Language",
   "nav.primaryLabel": "Primary",
+  "nav.closeMenu": "Close menu",
+  "nav.openMenu": "Open menu",
 
   // Schedule tab list
   "schedule.scheduleView": "Schedule view",
@@ -31,8 +33,7 @@ export const en = {
   "footer.information": "Information",
   "footer.followUs": "Follow Us",
   "footer.aboutAzhl": "About AZHL",
-  "footer.rulesRegulations": "Rules & Regulations",
-  "footer.committees": "Committees",
+  "footer.players": "Players",
   "footer.partners": "Partners",
   "footer.copyright": "© {year} AZHL. All rights reserved.",
 
@@ -55,10 +56,13 @@ export const en = {
   "home.noArticles": "No articles published yet.",
   "home.noTopPlayers": "No player statistics available yet.",
   "home.heroTagline": "One League. One Goal.",
+  "home.heroTitle": "Azerbaijan\nHockey League",
   "home.seasonSuffix": "Season",
 
   // League page
   "league.heroTagline": "Four clubs. One championship.",
+  "league.heroEyebrow": "Azerbaijan Hockey League",
+  "league.heroTitle": "The\nLeague",
   "league.aboutTitle": "About AZHL",
   "league.aboutP1":
     "AZHL (Azerbaijan Hockey League) is a hockey league created to develop and promote ice hockey in Azerbaijan.",
@@ -83,7 +87,7 @@ export const en = {
     "The AZHL Championship Trophy will be revealed ahead of the league's first Championship Final.",
 
   // Team detail page
-  "teamDetail.startingLineup": "Starting Lineup",
+  "teamDetail.rosterByPosition": "Roster by Position",
   "teamDetail.fullSquad": "Full Squad",
   "teamDetail.teamStatistics": "Team Statistics",
   "teamDetail.fullStandings": "Full standings",
@@ -227,6 +231,7 @@ export const en = {
   "game.home": "Home",
   "game.period": "Period",
   "game.timeTba": "Time TBA",
+  "game.versus": "vs",
   "game.shootout": "Shootout",
   "game.shootoutAbbr": "SO",
   "game.periodScores": "Score by period",
@@ -240,6 +245,7 @@ export const en = {
   "status.final": "Final",
   "status.finished": "Finished",
   "status.postponed": "Postponed",
+  "status.awaitingResult": "Awaiting result",
 
   // Player positions
   "position.center": "Center",

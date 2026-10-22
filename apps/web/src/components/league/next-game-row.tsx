@@ -7,7 +7,7 @@ import { TeamLogo } from "./team-logo";
 import { useTranslation } from "@/lib/i18n/use-translation";
 
 export function NextGameRow({ game }: { game: GameDTO }) {
-  const { formatDate, formatGameTime } = useTranslation();
+  const { t, formatDate, formatGameTime } = useTranslation();
   const date = new Date(game.startTime);
 
   return (
@@ -30,7 +30,7 @@ export function NextGameRow({ game }: { game: GameDTO }) {
         <div className="flex items-center gap-2 text-sm font-semibold text-foreground-primary">
           <TeamLogo teamSlug={game.awayTeam.slug} teamName={game.awayTeam.name} size={24} />
           <span className="uppercase">{game.awayTeam.name}</span>
-          <span className="text-foreground-tertiary">vs</span>
+          <span className="text-foreground-tertiary">{t("game.versus")}</span>
           <TeamLogo teamSlug={game.homeTeam.slug} teamName={game.homeTeam.name} size={24} />
           <span className="uppercase">{game.homeTeam.name}</span>
         </div>

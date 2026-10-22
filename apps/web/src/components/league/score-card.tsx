@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TeamLogo } from "./team-logo";
 import { useTranslation } from "@/lib/i18n/use-translation";
+import { isAwaitingResult } from "@/lib/game-status";
 import type { TranslationKey } from "@/lib/i18n/dictionaries";
 
 const STATUS_LABEL_KEY: Record<GameDTO["status"], TranslationKey> = {
@@ -28,7 +29,9 @@ export function ScoreCard({ game }: { game: GameDTO }) {
               // fabricated period/clock. See STATUS_LABEL_KEY above.
               <Badge variant="live">{t(STATUS_LABEL_KEY[game.status])}</Badge>
             ) : (
-              <Badge variant="neutral">{t(STATUS_LABEL_KEY[game.status])}</Badge>
+              <Badge variant="neutral">
+                {t(isAwaitingResult(game) ? "status.awaitingResult" : STATUS_LABEL_KEY[game.status])}
+              </Badge>
             )}
             {/* Compact: the date alone until the face-off time is announced ("Time TBA" lives on
                 the schedule's date headings and the game page). */}

@@ -52,18 +52,18 @@ export function TeamSelectPanel({ team }: { team: TeamDTO }) {
   return (
     <Link
       href={`/teams/${team.slug}`}
-      className="team-select-panel group relative flex h-full flex-1 flex-col items-center justify-center overflow-hidden border-r border-border-subtle bg-surface-base outline-none transition-transform duration-500 ease-out last:border-r-0 hover:z-10 hover:scale-[1.02] focus-visible:scale-[1.02]"
+      className="team-select-panel group relative flex h-full flex-1 flex-col items-center justify-center overflow-hidden border-r border-border-subtle bg-surface-base outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent transition-transform duration-500 ease-out last:border-r-0 hover:z-10 hover:scale-[1.02] focus-visible:scale-[1.02]"
       style={{ "--panel-glow": glow } as React.CSSProperties}
     >
       {/* Contrast wash — very dark at idle, lifts (but stays moody) on hover. Painted first so the
           screen-blended lighting below glows on top of it, not underneath it. */}
-      <div className="pointer-events-none absolute inset-0 bg-surface-base/85 transition-opacity duration-700 ease-out group-hover:opacity-50" />
+      <div className="pointer-events-none absolute inset-0 bg-surface-base/85 transition-opacity duration-700 ease-out group-hover:opacity-50 group-focus-visible:opacity-50" />
 
       {/* Lighting rig — masked so it fades naturally before the panel's rectangular edge.
           mask-image defaults to LUMINANCE masking, not alpha: the "visible" stop must be white
           (max luminance), not black (zero luminance masks content out, same as transparent). */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 ease-out group-hover:opacity-100"
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 ease-out group-hover:opacity-100 group-focus-visible:opacity-100"
         style={{
           maskImage: "radial-gradient(ellipse 68% 62% at 50% 46%, white 30%, transparent 82%)",
           WebkitMaskImage: "radial-gradient(ellipse 68% 62% at 50% 46%, white 30%, transparent 82%)",
@@ -149,7 +149,7 @@ export function TeamSelectPanel({ team }: { team: TeamDTO }) {
       {/* Subtle reflection on the panel surface — a slow diagonal sheen, spanning the full panel
           rather than fading at the radial mask edge, like light catching a glossy surface. */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 ease-out group-hover:opacity-100"
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 ease-out group-hover:opacity-100 group-focus-visible:opacity-100"
         style={{ mixBlendMode: "overlay" }}
       >
         <div
@@ -166,14 +166,14 @@ export function TeamSelectPanel({ team }: { team: TeamDTO }) {
           teamSlug={team.slug}
           teamName={team.name}
           size={128}
-          className="opacity-60 grayscale transition-all duration-500 ease-out [filter:drop-shadow(0_0_0_transparent)] group-hover:scale-110 group-hover:opacity-100 group-hover:grayscale-0 group-hover:[filter:drop-shadow(0_0_46px_var(--panel-glow))]"
+          className="opacity-60 grayscale transition-all duration-500 ease-out [filter:drop-shadow(0_0_0_transparent)] group-hover:scale-110 group-focus-visible:scale-110 group-hover:opacity-100 group-focus-visible:opacity-100 group-hover:grayscale-0 group-focus-visible:grayscale-0 group-hover:[filter:drop-shadow(0_0_46px_var(--panel-glow))] group-focus-visible:[filter:drop-shadow(0_0_46px_var(--panel-glow))]"
         />
 
-        <h2 className="font-display text-2xl font-bold uppercase tracking-wide text-foreground-tertiary transition-colors duration-500 ease-out group-hover:text-foreground-primary sm:text-3xl">
+        <h2 className="font-display text-2xl font-bold uppercase tracking-wide text-foreground-tertiary transition-colors duration-500 ease-out group-hover:text-foreground-primary group-focus-visible:text-foreground-primary sm:text-3xl">
           {team.name}
         </h2>
 
-        <div className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-widest text-foreground-tertiary opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100">
+        <div className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-widest text-foreground-tertiary opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100 group-focus-visible:opacity-100">
           {t("common.viewTeam")}
           <ChevronRight className="h-3 w-3" />
         </div>

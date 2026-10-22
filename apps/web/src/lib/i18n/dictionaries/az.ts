@@ -14,6 +14,8 @@ export const az = {
   "nav.join": "AZHL-Ə QOŞUL",
   "nav.language": "Dil",
   "nav.primaryLabel": "Əsas naviqasiya",
+  "nav.closeMenu": "Menyunu bağla",
+  "nav.openMenu": "Menyunu aç",
 
   "schedule.scheduleView": "Təqvim görünüşü",
 
@@ -23,8 +25,7 @@ export const az = {
   "footer.information": "Məlumat",
   "footer.followUs": "Bizi izləyin",
   "footer.aboutAzhl": "AZHL haqqında",
-  "footer.rulesRegulations": "Qaydalar və Reqlament",
-  "footer.committees": "Komitələr",
+  "footer.players": "Oyunçular",
   "footer.partners": "Tərəfdaşlar",
   "footer.copyright": "© {year} AZHL. Bütün hüquqlar qorunur.",
 
@@ -45,9 +46,12 @@ export const az = {
   "home.noArticles": "Hələ dərc olunmuş xəbər yoxdur.",
   "home.noTopPlayers": "Hələ oyunçu statistikası mövcud deyil.",
   "home.heroTagline": "Bir liqa. Bir məqsəd.",
+  "home.heroTitle": "Azərbaycan\nXokkey Liqası",
   "home.seasonSuffix": "mövsümü",
 
   "league.heroTagline": "Dörd klub. Bir çempionluq.",
+  "league.heroEyebrow": "Azərbaycan Xokkey Liqası",
+  "league.heroTitle": "Liqa\nhaqqında",
   "league.aboutTitle": "AZHL HAQQINDA",
   "league.aboutP1":
     "AZHL (Azərbaycan Xokkey Liqası) Azərbaycanda buz xokkeyini inkişaf etdirmək və təbliğ etmək məqsədilə yaradılmış xokkey liqasıdır.",
@@ -71,7 +75,7 @@ export const az = {
   "league.trophyBlurb":
     "AZHL Çempionluq Kuboku liqanın ilk Çempionluq Finalından əvvəl təqdim ediləcək.",
 
-  "teamDetail.startingLineup": "Əsas Tərkib",
+  "teamDetail.rosterByPosition": "Mövqelər üzrə heyət",
   "teamDetail.fullSquad": "Tam Heyət",
   "teamDetail.teamStatistics": "Komanda Statistikası",
   "teamDetail.fullStandings": "Tam turnir cədvəli",
@@ -205,6 +209,7 @@ export const az = {
   "game.home": "Ev sahibi",
   "game.period": "Period",
   "game.timeTba": "Vaxt dəqiqləşdirilir",
+  "game.versus": "—",
   "game.shootout": "Şutaut",
   "game.shootoutAbbr": "ŞA",
   "game.periodScores": "Dövrlər üzrə hesab",
@@ -217,6 +222,7 @@ export const az = {
   "status.final": "Yekun",
   "status.finished": "Başa çatıb",
   "status.postponed": "Təxirə salınıb",
+  "status.awaitingResult": "Nəticə gözlənilir",
 
   "position.center": "Mərkəz",
   "position.leftWing": "Sol Qanad",

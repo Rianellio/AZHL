@@ -9,8 +9,8 @@ import { useTranslation } from "@/lib/i18n/use-translation";
 const SLOT_ORDER: RinkSlot[] = ["G", "LD", "RD", "LW", "C", "RW"];
 
 /**
- * Starting lineup on the rink. Each slot shows the assigned player's jersey number and links
- * to their profile; the name appears on hover/focus. A slot with no player falls back to the
+ * Roster by position on the rink — not an official starting lineup (no lineup data exists). Each
+ * slot shows the assigned player's jersey number and links to their profile; the name appears on hover/focus. A slot with no player falls back to the
  * position-only marker, so a partial or empty roster still renders the full rink.
  */
 export function RinkRoster({ players, accent }: { players: PlayerSummaryDTO[]; accent: string }) {

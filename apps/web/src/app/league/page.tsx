@@ -29,7 +29,7 @@ export default async function LeaguePage() {
 
   return (
     <div className="flex flex-col">
-      <Hero eyebrow="Azerbaijan Hockey League" titleLines={["The", "League"]} taglineKey="league.heroTagline" />
+      <Hero eyebrowKey="league.heroEyebrow" titleKey="league.heroTitle" taglineKey="league.heroTagline" />
 
       {/* About AZHL — exact provided English copy, translated for AZ/RU, no invented history or achievements */}
       <section className="mx-auto w-full max-w-5xl px-6 py-16">
@@ -126,7 +126,7 @@ export default async function LeaguePage() {
       </section>
 
       {/* Partners */}
-      <section className="mx-auto w-full max-w-7xl px-6 py-16">
+      <section id="partners" className="mx-auto w-full max-w-7xl scroll-mt-24 px-6 py-16">
         <SectionHeader titleKey="home.partners" />
         <PartnersStrip />
       </section>

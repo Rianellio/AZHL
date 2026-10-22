@@ -12,6 +12,15 @@ import { getLeagueDateParts } from "@/lib/i18n/format-date";
  * useTranslation()'s formatDate (Intl for en/ru, a fixed name lookup for az). */
 const REFERENCE_SUNDAY = new Date(2023, 0, 1);
 
+/**
+ * formatDate renders in Baku time, but the grid's Date objects are local midnights used only for
+ * y/m/d arithmetic — east of Baku that midnight is still the previous day there. 12:00 UTC is
+ * the same calendar day in Baku (16:00), so pass grid dates through this before formatting.
+ */
+function asLeagueDay(date: Date): Date {
+  return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12));
+}
+
 /** Grid cells are plain calendar days (local Date objects used only for y/m/d arithmetic). */
 function dateKey(date: Date): string {
   return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
@@ -35,7 +44,7 @@ export function ScheduleCalendar({ games }: { games: GameDTO[] }) {
     return Array.from({ length: 7 }, (_, i) => {
       const day = new Date(REFERENCE_SUNDAY);
       day.setDate(REFERENCE_SUNDAY.getDate() + i);
-      return formatDate(day, { weekday: "short" });
+      return formatDate(asLeagueDay(day), { weekday: "short" });
     });
   }, [formatDate]);
 
@@ -90,7 +99,7 @@ export function ScheduleCalendar({ games }: { games: GameDTO[] }) {
           <ChevronLeft className="h-4 w-4" />
         </button>
         <h3 className="font-display text-lg font-bold uppercase tracking-wide text-foreground-primary">
-          {formatDate(monthCursor, { month: "long", year: "numeric" })}
+          {formatDate(asLeagueDay(monthCursor), { month: "long", year: "numeric" })}
         </h3>
         <button
           type="button"

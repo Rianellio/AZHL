@@ -116,7 +116,7 @@ export default function ContactsPage() {
             style={{ border: 0 }}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            title={`${LEAGUE_CONTACT.officeName} location map`}
+            title={LEAGUE_CONTACT.officeName}
           />
           <a
             href={LEAGUE_CONTACT.mapUrl}

@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { ScoreCard } from "./score-card";
 import { ScheduleCalendar } from "./schedule-calendar";
 import { useTranslation } from "@/lib/i18n/use-translation";
+import { isAwaitingResult, isUpcoming } from "@/lib/game-status";
 import type { TranslationKey } from "@/lib/i18n/dictionaries";
 
 type TabKey = "upcoming" | "completed" | "calendar";
@@ -46,15 +47,16 @@ export function ScheduleList({
   const upcoming = useMemo(
     () =>
       filtered
-        .filter((game) => game.status === "SCHEDULED" || game.status === "LIVE")
+        .filter((game) => isUpcoming(game))
         .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()),
     [filtered],
   );
 
+  // Results: finals, plus past games whose result hasn't been entered yet ("Awaiting result").
   const completed = useMemo(
     () =>
       filtered
-        .filter((game) => game.status === "FINAL")
+        .filter((game) => game.status === "FINAL" || isAwaitingResult(game))
         .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime()),
     [filtered],
   );

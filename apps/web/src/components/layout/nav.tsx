@@ -67,7 +67,7 @@ export function Nav() {
           className="flex h-9 w-9 items-center justify-center rounded-md text-foreground-primary lg:hidden"
           aria-expanded={open}
           aria-controls="mobile-nav"
-          aria-label={open ? "Close menu" : "Open menu"}
+          aria-label={t(open ? "nav.closeMenu" : "nav.openMenu")}
           onClick={() => setOpen((v) => !v)}
         >
           {open ? <X size={20} /> : <Menu size={20} />}
