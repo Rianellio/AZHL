@@ -2,7 +2,8 @@
 // Modeling conventions: .claude/database-guidelines.md
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
@@ -40,21 +41,21 @@ model Season {
 }
 
 model Team {
-  id            String   @id @default(cuid())
-  name          String
-  city          String
-  slug          String   @unique
-  abbreviation  String   @unique
-  colorPrimary  String
+  id             String     @id @default(cuid())
+  name           String
+  city           String
+  slug           String     @unique
+  abbreviation   String     @unique
+  colorPrimary   String
   colorSecondary String
-  colorAccent   String
-  logoUrl       String?
-  players       Player[]
-  homeGames     Game[]     @relation("HomeTeam")
-  awayGames     Game[]     @relation("AwayTeam")
-  standings     Standing[]
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  colorAccent    String
+  logoUrl        String?
+  players        Player[]
+  homeGames      Game[]     @relation("HomeTeam")
+  awayGames      Game[]     @relation("AwayTeam")
+  standings      Standing[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
 
   @@map("teams")
 }
@@ -69,14 +70,14 @@ enum PlayerPosition {
 
 /// Minimal Phase 1 shape — full profile fields (bio, height/weight, draft info, awards) land in Phase 2.
 model Player {
-  id            String         @id @default(cuid())
-  team          Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  teamId        String
-  fullName      String
-  jerseyNumber  Int
-  position      PlayerPosition
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id           String         @id @default(cuid())
+  team         Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamId       String
+  fullName     String
+  jerseyNumber Int
+  position     PlayerPosition
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 
   @@unique([teamId, jerseyNumber])
   @@index([teamId])
@@ -102,35 +103,35 @@ enum GameDecision {
 }
 
 model Game {
-  id          String     @id @default(cuid())
-  season      Season     @relation(fields: [seasonId], references: [id], onDelete: Cascade)
-  seasonId    String
-  status      GameStatus @default(SCHEDULED)
-  startTime   DateTime
-  venue       String
-  homeTeam    Team       @relation("HomeTeam", fields: [homeTeamId], references: [id])
-  homeTeamId  String
-  awayTeam    Team       @relation("AwayTeam", fields: [awayTeamId], references: [id])
-  awayTeamId  String
-  homeScore   Int?
-  awayScore   Int?
-  period      Int?
-  stage       GameStage  @default(REGULAR_SEASON)
+  id                 String        @id @default(cuid())
+  season             Season        @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  seasonId           String
+  status             GameStatus    @default(SCHEDULED)
+  startTime          DateTime
+  venue              String
+  homeTeam           Team          @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  homeTeamId         String
+  awayTeam           Team          @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  awayTeamId         String
+  homeScore          Int?
+  awayScore          Int?
+  period             Int?
+  stage              GameStage     @default(REGULAR_SEASON)
   /// Official match number from the league calendar (unique per season + stage).
-  matchNumber Int?
+  matchNumber        Int?
   /// Null until the game is FINAL.
-  decidedBy   GameDecision?
+  decidedBy          GameDecision?
   /// Goals in the shootout itself. The +1 the shootout winner gets is already in homeScore/awayScore.
-  homeShootoutGoals Int?
-  awayShootoutGoals Int?
-  homePeriodScores  Int[]  @default([])
-  awayPeriodScores  Int[]  @default([])
-  homeShots   Int?
-  awayShots   Int?
+  homeShootoutGoals  Int?
+  awayShootoutGoals  Int?
+  homePeriodScores   Int[]         @default([])
+  awayPeriodScores   Int[]         @default([])
+  homeShots          Int?
+  awayShots          Int?
   /// False until the league announces the face-off time; startTime then holds the date at 12:00 UTC.
-  startTimeConfirmed Boolean @default(false)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  startTimeConfirmed Boolean       @default(false)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
 
   @@unique([seasonId, stage, matchNumber])
   @@index([seasonId, startTime])
@@ -141,25 +142,25 @@ model Game {
 
 /// Derived/materialized per team per season — recomputed from Game results, not hand-edited.
 model Standing {
-  id          String   @id @default(cuid())
-  season      Season   @relation(fields: [seasonId], references: [id], onDelete: Cascade)
-  seasonId    String
-  team        Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  teamId      String
-  gamesPlayed Int      @default(0)
+  id             String   @id @default(cuid())
+  season         Season   @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  seasonId       String
+  team           Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamId         String
+  gamesPlayed    Int      @default(0)
   /// Regulation wins/losses only — GP = wins + shootoutWins + shootoutLosses + losses.
-  wins        Int      @default(0)
-  losses      Int      @default(0)
-  shootoutWins   Int   @default(0)
-  shootoutLosses Int   @default(0)
+  wins           Int      @default(0)
+  losses         Int      @default(0)
+  shootoutWins   Int      @default(0)
+  shootoutLosses Int      @default(0)
   /// deprecated — unused, drop in a follow-up migration after this release is live
-  otLosses    Int      @default(0)
-  points      Int      @default(0)
-  goalsFor    Int      @default(0)
-  goalsAgainst Int     @default(0)
-  streak      String   @default("")
-  rank        Int
-  updatedAt   DateTime @updatedAt
+  otLosses       Int      @default(0)
+  points         Int      @default(0)
+  goalsFor       Int      @default(0)
+  goalsAgainst   Int      @default(0)
+  streak         String   @default("")
+  rank           Int
+  updatedAt      DateTime @updatedAt
 
   @@unique([seasonId, teamId])
   @@index([seasonId, rank])
