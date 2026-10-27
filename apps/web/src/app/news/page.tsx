@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { serverT } from "@/lib/i18n/server";
 import { listNewsArticles } from "@/lib/server/services/news.service";
 import { ArticleCard } from "@/components/league/article-card";
 import { T } from "@/components/ui/t";
@@ -7,7 +8,7 @@ import { EmptyState } from "@/components/league/empty-state";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "News",
+  title: serverT("meta.news"),
 };
 
 export default async function NewsPage() {

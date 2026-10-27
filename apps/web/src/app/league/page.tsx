@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { serverT } from "@/lib/i18n/server";
 import Link from "next/link";
 import { Users, CalendarDays, Swords, Crown, Trophy } from "lucide-react";
 import { getAllTeams } from "@/lib/server/services/team.service";
@@ -13,7 +14,7 @@ import type { TranslationKey } from "@/lib/i18n/dictionaries";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "League",
+  title: serverT("meta.league"),
 };
 
 /** Structural description of how AZHL competition works — no results or history implied, just the format. */
@@ -29,7 +30,7 @@ export default async function LeaguePage() {
 
   return (
     <div className="flex flex-col">
-      <Hero eyebrow="Azerbaijan Hockey League" titleLines={["The", "League"]} taglineKey="league.heroTagline" />
+      <Hero eyebrowKey="league.heroEyebrow" titleKey="league.heroTitle" taglineKey="league.heroTagline" />
 
       {/* About AZHL — exact provided English copy, translated for AZ/RU, no invented history or achievements */}
       <section className="mx-auto w-full max-w-5xl px-6 py-16">
@@ -91,14 +92,9 @@ export default async function LeaguePage() {
               >
                 <CardContent className="flex flex-col items-center gap-4 p-8 text-center">
                   <TeamLogo teamSlug={team.slug} teamName={team.name} size={88} />
-                  <div>
-                    <h3 className="font-display text-lg font-bold uppercase tracking-wide text-foreground-primary">
-                      {team.name}
-                    </h3>
-                    <p className="text-xs font-medium uppercase tracking-wide text-foreground-tertiary">
-                      {team.city}
-                    </p>
-                  </div>
+                  <h3 className="font-display text-lg font-bold uppercase tracking-wide text-foreground-primary">
+                    {team.name}
+                  </h3>
                 </CardContent>
               </Card>
             </Link>
@@ -131,7 +127,7 @@ export default async function LeaguePage() {
       </section>
 
       {/* Partners */}
-      <section className="mx-auto w-full max-w-7xl px-6 py-16">
+      <section id="partners" className="mx-auto w-full max-w-7xl scroll-mt-24 px-6 py-16">
         <SectionHeader titleKey="home.partners" />
         <PartnersStrip />
       </section>

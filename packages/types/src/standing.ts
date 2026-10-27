@@ -4,9 +4,12 @@ export interface StandingDTO {
   team: TeamSummaryDTO;
   seasonId: string;
   gamesPlayed: number;
+  /** Regulation wins only. */
   wins: number;
+  /** Regulation losses only — GP = wins + shootoutWins + shootoutLosses + losses. */
   losses: number;
-  otLosses: number;
+  shootoutWins: number;
+  shootoutLosses: number;
   points: number;
   goalsFor: number;
   goalsAgainst: number;

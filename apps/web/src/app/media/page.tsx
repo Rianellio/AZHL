@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { serverT } from "@/lib/i18n/server";
 import Image from "next/image";
 import { Instagram } from "lucide-react";
 import { Button } from "@azhl/ui";
@@ -7,7 +8,7 @@ import { T } from "@/components/ui/t";
 import { LEAGUE_CONTACT } from "@/lib/league-contact";
 
 export const metadata: Metadata = {
-  title: "Media",
+  title: serverT("meta.media"),
 };
 
 /**

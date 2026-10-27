@@ -20,6 +20,8 @@ export const en = {
   "nav.join": "Join AZHL",
   "nav.language": "Language",
   "nav.primaryLabel": "Primary",
+  "nav.closeMenu": "Close menu",
+  "nav.openMenu": "Open menu",
 
   // Schedule tab list
   "schedule.scheduleView": "Schedule view",
@@ -31,8 +33,7 @@ export const en = {
   "footer.information": "Information",
   "footer.followUs": "Follow Us",
   "footer.aboutAzhl": "About AZHL",
-  "footer.rulesRegulations": "Rules & Regulations",
-  "footer.committees": "Committees",
+  "footer.players": "Players",
   "footer.partners": "Partners",
   "footer.copyright": "© {year} AZHL. All rights reserved.",
 
@@ -55,10 +56,13 @@ export const en = {
   "home.noArticles": "No articles published yet.",
   "home.noTopPlayers": "No player statistics available yet.",
   "home.heroTagline": "One League. One Goal.",
+  "home.heroTitle": "Azerbaijan\nHockey League",
   "home.seasonSuffix": "Season",
 
   // League page
   "league.heroTagline": "Four clubs. One championship.",
+  "league.heroEyebrow": "Azerbaijan Hockey League",
+  "league.heroTitle": "The\nLeague",
   "league.aboutTitle": "About AZHL",
   "league.aboutP1":
     "AZHL (Azerbaijan Hockey League) is a hockey league created to develop and promote ice hockey in Azerbaijan.",
@@ -68,14 +72,13 @@ export const en = {
     "Our goal is to develop hockey teams, organize regular championships, and build a strong hockey community in Azerbaijan.",
   "league.competitionFormat": "Competition Format",
   "league.format4Teams": "4 Teams",
-  "league.format4TeamsDesc": "Four clubs compete in AZHL, each representing a different city in Azerbaijan.",
+  "league.format4TeamsDesc": "Four clubs, one venue: every match is played in Baku at the Heydar Aliyev Sports and Concert Complex.",
   "league.formatRegularSeason": "Regular Season",
-  "league.formatRegularSeasonDesc": "Every club faces the others home and away in a round-robin schedule.",
+  "league.formatRegularSeasonDesc": "Each club plays 15 matches (30 in total). Three 20-minute periods, no overtime — a game tied after regulation goes to a shootout.",
   "league.formatPlayoffs": "Playoffs",
-  "league.formatPlayoffsDesc": "The leading clubs from the regular season advance to the playoffs.",
+  "league.formatPlayoffsDesc": "All four clubs make the playoffs. Semifinals pair 1st vs 4th and 2nd vs 3rd, best of three (first to two wins).",
   "league.formatFinal": "Championship Final",
-  "league.formatFinalDesc":
-    "The playoffs conclude with a single Championship Final to crown the AZHL champion.",
+  "league.formatFinalDesc": "The semifinal winners meet in a best-of-five final (first to three wins) to crown the AZHL champion.",
   "league.teamsOverview": "Teams Overview",
   "league.viewAllTeams": "View all teams",
   "league.championshipTrophy": "Championship Trophy",
@@ -84,7 +87,7 @@ export const en = {
     "The AZHL Championship Trophy will be revealed ahead of the league's first Championship Final.",
 
   // Team detail page
-  "teamDetail.startingLineup": "Starting Lineup",
+  "teamDetail.rosterByPosition": "Roster by Position",
   "teamDetail.fullSquad": "Full Squad",
   "teamDetail.teamStatistics": "Team Statistics",
   "teamDetail.fullStandings": "Full standings",
@@ -92,6 +95,7 @@ export const en = {
   "teamDetail.standingsWillAppear": "Standings will appear once the season begins.",
   "teamDetail.rank": "Rank",
   "teamDetail.gfga": "GF / GA",
+  "teamDetail.teamLeaders": "Team Leaders",
 
   // Full squad groups + table
   "fullSquad.goalkeepers": "Goalkeepers",
@@ -99,6 +103,7 @@ export const en = {
   "fullSquad.forwards": "Forwards",
   "fullSquad.colNum": "#",
   "fullSquad.colPos": "Pos",
+  "fullSquad.colPlayer": "Player",
 
   // Players list page
   "players.title": "Players",
@@ -106,17 +111,10 @@ export const en = {
   "players.empty": "No players announced yet.",
 
   // Player detail page
-  "playerDetail.biography": "Biography",
   "playerDetail.seasonStatistics": "Season Statistics",
   "playerDetail.careerStatistics": "Career Statistics",
   "playerDetail.achievements": "Achievements",
   "playerDetail.recentGames": "Recent Games",
-  "playerDetail.relatedNews": "Related News",
-  "playerDetail.allNews": "All news",
-  "playerDetail.age": "Age",
-  "playerDetail.height": "Height",
-  "playerDetail.weight": "Weight",
-  "playerDetail.hometown": "Hometown",
   "playerDetail.goals": "Goals",
   "playerDetail.assists": "Assists",
   "playerDetail.points": "Points",
@@ -128,12 +126,23 @@ export const en = {
   "playerDetail.colDate": "Date",
   "playerDetail.colOpponent": "Opponent",
   "playerDetail.colResult": "Result",
+  "playerDetail.vsHome": "vs {team}",
+  "playerDetail.vsAway": "@ {team}",
+  "playerDetail.resultWin": "W",
+  "playerDetail.resultLoss": "L",
   "playerDetail.noPriorSeasons": "No prior seasons — this is the club's first AZHL season.",
   "playerDetail.noAchievements": "No achievements recorded yet.",
   "playerDetail.noGamesPlayed": "No games played yet this season.",
-  "playerDetail.dayAgo": "1 day ago",
-  "playerDetail.daysAgo": "{n} days ago",
-  "playerDetail.countrySuffix": "Azerbaijan",
+  "playerDetail.penaltyMinutes": "Penalty Minutes",
+  "playerDetail.wins": "Wins",
+  "playerDetail.losses": "Losses",
+  "playerDetail.goalsAgainstAverage": "Goals Against Avg",
+  "playerDetail.savePercentage": "Save Percentage",
+  "playerDetail.shutouts": "Shutouts",
+  "playerDetail.colPim": "PIM",
+  "playerDetail.colGaa": "GAA",
+  "playerDetail.colSvPct": "SV%",
+  "playerDetail.colSo": "SO",
 
   // Schedule page
   "schedule.title": "Schedule",
@@ -156,8 +165,8 @@ export const en = {
   "standings.colTeam": "Team",
   "standings.colGP": "GP",
   "standings.colW": "W",
-  "standings.colOTW": "OTW",
-  "standings.colOTL": "OTL",
+  "standings.colSOW": "SOW",
+  "standings.colSOL": "SOL",
   "standings.colL": "L",
   "standings.colGF": "GF",
   "standings.colGA": "GA",
@@ -221,6 +230,13 @@ export const en = {
   "game.away": "Away",
   "game.home": "Home",
   "game.period": "Period",
+  "game.timeTba": "Time TBA",
+  "game.versus": "vs",
+  "game.shootout": "Shootout",
+  "game.shootoutAbbr": "SO",
+  "game.periodScores": "Score by period",
+  "game.colTotal": "T",
+  "game.shots": "Shots on goal",
 
   // Game/game-card status labels
   "status.upcoming": "Upcoming",
@@ -229,6 +245,7 @@ export const en = {
   "status.final": "Final",
   "status.finished": "Finished",
   "status.postponed": "Postponed",
+  "status.awaitingResult": "Awaiting result",
 
   // Player positions
   "position.center": "Center",
@@ -239,12 +256,47 @@ export const en = {
   "position.leftDefense": "Left Defense",
   "position.rightDefense": "Right Defense",
 
+  // Player bio additions
+  "playerDetail.bioAge": "Age",
+  "playerDetail.bioPhysical": "Height / Weight",
+  "playerDetail.bioShoots": "Shoots",
+  "playerDetail.bioCitizenship": "Citizenship",
+  "playerDetail.shootsLeft": "Left (L)",
+  "playerDetail.shootsRight": "Right (R)",
+  "playerDetail.badgeJunior": "Junior (U18)",
+  "playerDetail.badgeVeteran": "Veteran",
+
   // Partners strip
 
   // 404 page
   "notFound.title": "Page not found",
   "notFound.description": "The page you're looking for doesn't exist.",
   "notFound.backHome": "Back to home",
+  "error.title": "Something went wrong",
+  "error.description": "We couldn't load this page. Please try again in a moment.",
+  "error.retry": "Try again",
+  "meta.description": "Standings, schedule, scores, and news for the Azerbaijan Hockey League.",
+  "meta.contacts": "Contact",
+  "meta.league": "League",
+  "meta.media": "Media",
+  "meta.news": "News",
+  "meta.players": "Players",
+  "meta.schedule": "Schedule",
+  "meta.standings": "Standings",
+  "meta.stats": "Statistics",
+  "meta.teams": "Teams",
+  "meta.game": "{away} vs {home}",
+  "teams.title": "Teams",
+  "teams.clubs.one": "{n} club",
+  "teams.clubs.few": "{n} clubs",
+  "teams.clubs.many": "{n} clubs",
+  "teams.clubs.other": "{n} clubs",
+  "teams.season": "Season {label}",
+  "teams.rank": "Place",
+  "teams.points": "Points",
+  "teams.nextMatch": "Next match",
+  "teams.roster": "Players",
+  "teams.cardLabel": "Open the {team} team page",
 } as const;
 
 export type TranslationKey = keyof typeof en;

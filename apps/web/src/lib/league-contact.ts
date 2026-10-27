@@ -15,7 +15,7 @@ export const LEAGUE_CONTACT = {
   phone: "",
   officeName: "Ice Palace",
   city: "Baku, Azerbaijan",
-  instagramUrl: "https://www.instagram.com/azerbaijan.icehockey?igsi=MWpjdzRuNzg1cnIzdw==",
+  instagramUrl: "https://www.instagram.com/azhlofficial",
   mapUrl: "https://maps.app.goo.gl/V8YaYDNfyc7UHwoNA",
   mapEmbedSrc: "https://maps.google.com/maps?q=40.392059,49.8241913&z=16&output=embed",
 };

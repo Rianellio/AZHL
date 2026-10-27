@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import { serverT } from "@/lib/i18n/server";
 import { Mail, MapPin, Instagram } from "lucide-react";
 import { ContactForm } from "@/components/league/contact-form";
 import { LEAGUE_CONTACT } from "@/lib/league-contact";
 import { T } from "@/components/ui/t";
 
 export const metadata: Metadata = {
-  title: "Contact",
+  title: serverT("meta.contacts"),
 };
 
 /**
@@ -116,7 +117,7 @@ export default function ContactsPage() {
             style={{ border: 0 }}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            title={`${LEAGUE_CONTACT.officeName} location map`}
+            title={LEAGUE_CONTACT.officeName}
           />
           <a
             href={LEAGUE_CONTACT.mapUrl}

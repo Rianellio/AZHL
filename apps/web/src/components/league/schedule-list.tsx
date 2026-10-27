@@ -2,11 +2,11 @@
 
 import { useMemo, useState } from "react";
 import type { GameDTO } from "@azhl/types";
-import { formatGameDate } from "@azhl/utils";
 import { cn } from "@/lib/utils";
 import { ScoreCard } from "./score-card";
 import { ScheduleCalendar } from "./schedule-calendar";
 import { useTranslation } from "@/lib/i18n/use-translation";
+import { isAwaitingResult, isUpcoming } from "@/lib/game-status";
 import type { TranslationKey } from "@/lib/i18n/dictionaries";
 
 type TabKey = "upcoming" | "completed" | "calendar";
@@ -47,15 +47,16 @@ export function ScheduleList({
   const upcoming = useMemo(
     () =>
       filtered
-        .filter((game) => game.status === "SCHEDULED" || game.status === "LIVE")
+        .filter((game) => isUpcoming(game))
         .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()),
     [filtered],
   );
 
+  // Results: finals, plus past games whose result hasn't been entered yet ("Awaiting result").
   const completed = useMemo(
     () =>
       filtered
-        .filter((game) => game.status === "FINAL")
+        .filter((game) => game.status === "FINAL" || isAwaitingResult(game))
         .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime()),
     [filtered],
   );
@@ -64,15 +65,27 @@ export function ScheduleList({
     <div className="flex flex-col gap-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex gap-2" role="tablist" aria-label={t("schedule.scheduleView")}>
-          {TABS.map((tabDef) => (
+          {TABS.map((tabDef, index) => (
             <button
               key={tabDef.key}
+              id={`schedule-tab-${tabDef.key}`}
               type="button"
               role="tab"
               aria-selected={tab === tabDef.key}
+              aria-controls="schedule-tabpanel"
+              tabIndex={tab === tabDef.key ? 0 : -1}
               onClick={() => setTab(tabDef.key)}
+              onKeyDown={(event) => {
+                // WAI-ARIA tabs pattern: arrow keys move between tabs (roving tabindex).
+                const step = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+                if (step === 0) return;
+                event.preventDefault();
+                const next = TABS[(index + step + TABS.length) % TABS.length]!;
+                setTab(next.key);
+                document.getElementById(`schedule-tab-${next.key}`)?.focus();
+              }}
               className={cn(
-                "rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wide transition-colors duration-150",
+                "rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wide transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
                 tab === tabDef.key
                   ? "bg-accent text-accent-tint"
                   : "border border-border-subtle text-foreground-secondary hover:border-accent hover:text-foreground-primary",
@@ -103,25 +116,27 @@ export function ScheduleList({
         </div>
       </div>
 
-      {tab === "upcoming" && <GameGrid games={upcoming} emptyMessageKey="schedule.noUpcoming" />}
-      {tab === "completed" && <GameGrid games={completed} emptyMessageKey="schedule.noCompleted" />}
-      {tab === "calendar" && <ScheduleCalendar games={filtered} />}
+      <div id="schedule-tabpanel" role="tabpanel" aria-labelledby={`schedule-tab-${tab}`}>
+        {tab === "upcoming" && <GameGrid games={upcoming} emptyMessageKey="schedule.noUpcoming" />}
+        {tab === "completed" && <GameGrid games={completed} emptyMessageKey="schedule.noCompleted" />}
+        {tab === "calendar" && <ScheduleCalendar games={filtered} />}
+      </div>
     </div>
   );
 }
 
 function GameGrid({ games, emptyMessageKey }: { games: GameDTO[]; emptyMessageKey: TranslationKey }) {
-  const { t, intlTag } = useTranslation();
+  const { t, formatGameDate } = useTranslation();
   const grouped = useMemo(() => {
     const map = new Map<string, GameDTO[]>();
     for (const game of games) {
-      const key = formatGameDate(game.startTime, intlTag);
+      const key = formatGameDate(game.startTime);
       const existing = map.get(key) ?? [];
       existing.push(game);
       map.set(key, existing);
     }
     return Array.from(map.entries());
-  }, [games, intlTag]);
+  }, [games, formatGameDate]);
 
   if (games.length === 0) {
     return <p className="text-sm text-foreground-secondary">{t(emptyMessageKey)}</p>;
@@ -133,6 +148,7 @@ function GameGrid({ games, emptyMessageKey }: { games: GameDTO[]; emptyMessageKe
         <section key={date} aria-label={date}>
           <h2 className="mb-3 font-display text-sm font-semibold uppercase tracking-wide text-foreground-secondary">
             {date}
+            {dateGames.every((game) => !game.startTimeConfirmed) && <> &middot; {t("game.timeTba")}</>}
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {dateGames.map((game) => (

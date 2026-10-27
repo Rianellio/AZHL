@@ -2,6 +2,8 @@ import { getCurrentSeasonStandings } from "@/lib/server/services/standings.servi
 import { getCurrentSeasonSchedule } from "@/lib/server/services/schedule.service";
 import { listNewsArticles } from "@/lib/server/services/news.service";
 import { getAllPlayers } from "@/lib/server/services/player.service";
+import { getCurrentSeason } from "@/lib/server/services/season.service";
+import { isUpcoming } from "@/lib/game-status";
 import { rankPlayersByMockPoints } from "@/lib/mock/player-stats";
 import { Hero } from "@/components/league/hero";
 import { SectionHeader } from "@/components/league/section-header";
@@ -15,15 +17,16 @@ import { EmptyState } from "@/components/league/empty-state";
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [standings, schedule, articles, players] = await Promise.all([
+  const [standings, schedule, articles, players, season] = await Promise.all([
     getCurrentSeasonStandings(),
     getCurrentSeasonSchedule(),
     listNewsArticles(),
     getAllPlayers(),
+    getCurrentSeason(),
   ]);
 
   const nextGames = [...schedule]
-    .filter((game) => game.status !== "FINAL")
+    .filter((game) => isUpcoming(game))
     .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
     .slice(0, 3);
 
@@ -38,14 +41,16 @@ export default async function HomePage() {
     .slice(0, 3);
   const latestArticles = articles.slice(0, 4);
 
-  const seasonYear = new Date().getFullYear();
-  const seasonYearRange = `${seasonYear}-${seasonYear + 1}`;
+  // From the season record, not today's date — "2026-2027" must not flip to "2027-2028" in January.
+  const seasonYearRange = season
+    ? `${new Date(season.startDate).getUTCFullYear()}-${new Date(season.endDate).getUTCFullYear()}`
+    : undefined;
 
   return (
     <div className="flex flex-col">
       <Hero
         seasonYearRange={seasonYearRange}
-        titleLines={["Azerbaijan", "Hockey League"]}
+        titleKey="home.heroTitle"
         taglineKey="home.heroTagline"
         cta={{ labelKey: "nav.join", href: "/contacts" }}
       />

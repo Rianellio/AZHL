@@ -6,14 +6,30 @@ import type { GameDTO } from "@azhl/types";
 import { cn } from "@/lib/utils";
 import { ScoreCard } from "./score-card";
 import { useTranslation } from "@/lib/i18n/use-translation";
+import { getLeagueDateParts } from "@/lib/i18n/format-date";
 
 /** Reference week (a known Sunday) purely to read locale-correct short weekday names out of
- * `Intl.DateTimeFormat` — never manually translated, so it's correct for any locale the app
- * later adds. */
+ * useTranslation()'s formatDate (Intl for en/ru, a fixed name lookup for az). */
 const REFERENCE_SUNDAY = new Date(2023, 0, 1);
 
+/**
+ * formatDate renders in Baku time, but the grid's Date objects are local midnights used only for
+ * y/m/d arithmetic — east of Baku that midnight is still the previous day there. 12:00 UTC is
+ * the same calendar day in Baku (16:00), so pass grid dates through this before formatting.
+ */
+function asLeagueDay(date: Date): Date {
+  return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12));
+}
+
+/** Grid cells are plain calendar days (local Date objects used only for y/m/d arithmetic). */
 function dateKey(date: Date): string {
   return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+}
+
+/** A game's day is its Baku calendar day, so a 00:30 game lands on the right cell in any time zone. */
+function gameDateKey(iso: string): string {
+  const { year, month, day } = getLeagueDateParts(iso);
+  return `${year}-${month}-${day}`;
 }
 
 /**
@@ -22,32 +38,23 @@ function dateKey(date: Date): string {
  * match cards below; days without games are inert (nothing to invent for an empty day).
  */
 export function ScheduleCalendar({ games }: { games: GameDTO[] }) {
-  const { t, intlTag } = useTranslation();
+  const { t, formatDate } = useTranslation();
 
   const weekdayLabels = useMemo(() => {
-    const formatter = new Intl.DateTimeFormat(intlTag, { weekday: "short" });
     return Array.from({ length: 7 }, (_, i) => {
       const day = new Date(REFERENCE_SUNDAY);
       day.setDate(REFERENCE_SUNDAY.getDate() + i);
-      return formatter.format(day);
+      return formatDate(asLeagueDay(day), { weekday: "short" });
     });
-  }, [intlTag]);
-
-  const monthFormatter = useMemo(
-    () => new Intl.DateTimeFormat(intlTag, { month: "long", year: "numeric" }),
-    [intlTag],
-  );
-  const selectedDayFormatter = useMemo(
-    () => new Intl.DateTimeFormat(intlTag, { weekday: "long", month: "long", day: "numeric" }),
-    [intlTag],
-  );
+  }, [formatDate]);
 
   const initialMonth = useMemo(() => {
     if (games.length === 0) return new Date();
     const earliest = [...games].sort(
       (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
     )[0]!;
-    return new Date(earliest.startTime);
+    const { year, month, day } = getLeagueDateParts(earliest.startTime);
+    return new Date(year, month, day);
   }, [games]);
 
   const [monthCursor, setMonthCursor] = useState(
@@ -58,7 +65,7 @@ export function ScheduleCalendar({ games }: { games: GameDTO[] }) {
   const gamesByDay = useMemo(() => {
     const map = new Map<string, GameDTO[]>();
     for (const game of games) {
-      const key = dateKey(new Date(game.startTime));
+      const key = gameDateKey(game.startTime);
       const list = map.get(key) ?? [];
       list.push(game);
       map.set(key, list);
@@ -92,7 +99,7 @@ export function ScheduleCalendar({ games }: { games: GameDTO[] }) {
           <ChevronLeft className="h-4 w-4" />
         </button>
         <h3 className="font-display text-lg font-bold uppercase tracking-wide text-foreground-primary">
-          {monthFormatter.format(monthCursor)}
+          {formatDate(asLeagueDay(monthCursor), { month: "long", year: "numeric" })}
         </h3>
         <button
           type="button"
@@ -160,7 +167,7 @@ export function ScheduleCalendar({ games }: { games: GameDTO[] }) {
       {selectedGames.length > 0 && (
         <div>
           <h4 className="mb-3 font-display text-sm font-semibold uppercase tracking-wide text-foreground-secondary">
-            {t("schedule.gamesOn", { date: selectedDayFormatter.format(new Date(selectedGames[0]!.startTime)) })}
+            {t("schedule.gamesOn", { date: formatDate(selectedGames[0]!.startTime, { weekday: "long", month: "long", day: "numeric" }) })}
           </h4>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {selectedGames.map((game) => (

@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import { serverT } from "@/lib/i18n/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { User } from "lucide-react";
 import { getPlayerById } from "@/lib/server/services/player.service";
 import { getCurrentSeasonSchedule } from "@/lib/server/services/schedule.service";
 import { getMockPlayerStats } from "@/lib/mock/player-stats";
+import { getMockGoalieStats } from "@/lib/mock/goalie-stats";
 import { getMockPlayerBio } from "@/lib/mock/player-bio";
-import { getMockTeamNews } from "@/lib/mock/team-news";
+import { formatCount, formatGoalsAgainstAverage, formatSavePercentage } from "@/lib/stat-format";
 import { ImagePlaceholder } from "@/components/ui/image-placeholder";
 import { StatTile } from "@/components/league/stat-tile";
 import { SectionHeader } from "@/components/league/section-header";
@@ -14,7 +16,6 @@ import { EmptyState } from "@/components/league/empty-state";
 import { GameDate } from "@/components/league/game-date";
 import { T } from "@/components/ui/t";
 import { positionTranslationKey } from "@/lib/i18n/position-key";
-import { Card, CardContent } from "@/components/ui/card";
 
 export const revalidate = 60;
 
@@ -25,7 +26,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const player = await getPlayerById(id);
-  return { title: player ? player.fullName : "Player not found" };
+  return { title: player ? player.fullName : serverT("notFound.title") };
 }
 
 export default async function PlayerProfilePage({
@@ -39,9 +40,9 @@ export default async function PlayerProfilePage({
 
   const schedule = await getCurrentSeasonSchedule();
 
+  const bio = getMockPlayerBio(player);
   const seasonStats = getMockPlayerStats(player);
-  const bio = getMockPlayerBio(player.id, player.team.name);
-  const relatedNews = getMockTeamNews(player.team.name).slice(0, 2);
+  const goalieStats = player.position === "G" ? getMockGoalieStats(player) : null;
   const posKey = positionTranslationKey(player.position);
 
   const recentTeamGames = schedule
@@ -53,7 +54,7 @@ export default async function PlayerProfilePage({
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-16">
-      {/* Portrait + identity */}
+      {/* Portrait + Identity + Flashscore Bio */}
       <div className="mb-14 grid grid-cols-1 gap-8 sm:grid-cols-[220px_1fr]">
         <ImagePlaceholder
           ratio="aspect-[3/4]"
@@ -61,116 +62,115 @@ export default async function PlayerProfilePage({
           icon={<User className="h-16 w-16 text-foreground-tertiary" strokeWidth={1} />}
         />
         <div className="flex flex-col justify-end gap-3">
-          <Link
-            href={`/teams/${player.team.slug}`}
-            className="w-fit text-xs font-semibold uppercase tracking-wide text-accent hover:text-accent-hover"
-          >
-            {player.team.name}
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/teams/${player.team.slug}`}
+              className="w-fit text-xs font-semibold uppercase tracking-wide text-accent hover:text-accent-hover"
+            >
+              {player.team.name}
+            </Link>
+            {bio.category === "junior" && (
+              <span className="rounded border border-accent/30 bg-accent/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent">
+                <T k="playerDetail.badgeJunior" />
+              </span>
+            )}
+            {bio.category === "veteran" && (
+              <span className="rounded border border-border-subtle bg-surface-raised px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-foreground-secondary">
+                <T k="playerDetail.badgeVeteran" />
+              </span>
+            )}
+          </div>
+
           <h1 className="font-display text-5xl font-bold uppercase leading-none text-foreground-primary">
             {player.fullName}
           </h1>
+
           <p className="text-sm font-medium uppercase tracking-wide text-foreground-secondary">
-            #{player.jerseyNumber} &middot; {posKey ? <T k={posKey} /> : player.position} &middot;{" "}
-            {bio.hometown}, <T k="playerDetail.countrySuffix" />
+            #{player.jerseyNumber} &middot; {posKey ? <T k={posKey} /> : player.position}
           </p>
+
+          {/* Flashscore Bio Grid */}
+          <dl className="mt-3 grid grid-cols-2 gap-3 border-t border-border-subtle pt-4 sm:grid-cols-4 sm:gap-4">
+            <div className="flex flex-col">
+              <dt className="text-[11px] font-medium uppercase tracking-wider text-foreground-secondary">
+                <T k="playerDetail.bioAge" />
+              </dt>
+              <dd className="font-display text-base font-semibold text-foreground-primary">
+                {bio.age}{" "}
+                <span className="text-xs font-normal text-foreground-tertiary">({bio.birthDate})</span>
+              </dd>
+            </div>
+            <div className="flex flex-col">
+              <dt className="text-[11px] font-medium uppercase tracking-wider text-foreground-secondary">
+                <T k="playerDetail.bioPhysical" />
+              </dt>
+              <dd className="font-display text-base font-semibold text-foreground-primary">
+                {bio.heightCm} см / {bio.weightKg} кг
+              </dd>
+            </div>
+            <div className="flex flex-col">
+              <dt className="text-[11px] font-medium uppercase tracking-wider text-foreground-secondary">
+                <T k="playerDetail.bioShoots" />
+              </dt>
+              <dd className="font-display text-base font-semibold text-foreground-primary">
+                <T k={bio.shoots === "L" ? "playerDetail.shootsLeft" : "playerDetail.shootsRight"} />
+              </dd>
+            </div>
+            <div className="flex flex-col">
+              <dt className="text-[11px] font-medium uppercase tracking-wider text-foreground-secondary">
+                <T k="playerDetail.bioCitizenship" />
+              </dt>
+              <dd className="flex items-center gap-1.5 font-display text-base font-semibold text-foreground-primary">
+                <span>🇦🇿</span> {bio.citizenshipCode}
+              </dd>
+            </div>
+          </dl>
         </div>
       </div>
 
       <div className="flex flex-col gap-14">
-        {/* Biography */}
-        <section>
-          <SectionHeader titleKey="playerDetail.biography" />
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_1fr]">
-            <Card>
-              <CardContent className="p-6">
-                <p className="text-sm leading-relaxed text-foreground-secondary">{bio.bio}</p>
-              </CardContent>
-            </Card>
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
-              <StatTile labelKey="playerDetail.age" value={bio.age} />
-              <StatTile labelKey="playerDetail.height" value={`${bio.heightCm} cm`} />
-              <StatTile labelKey="playerDetail.weight" value={`${bio.weightKg} kg`} />
-              <StatTile labelKey="playerDetail.hometown" value={bio.hometown} />
-            </div>
-          </div>
-        </section>
-
         {/* Season stats */}
         <section>
           <SectionHeader titleKey="playerDetail.seasonStatistics" />
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <StatTile labelKey="standings.colGP" value={seasonStats.gamesPlayed} />
-            <StatTile labelKey="playerDetail.goals" value={seasonStats.goals} />
-            <StatTile labelKey="playerDetail.assists" value={seasonStats.assists} />
-            <StatTile labelKey="playerDetail.points" value={seasonStats.points} />
-          </div>
+          {goalieStats ? (
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+              <StatTile labelKey="standings.colGP" value={goalieStats.gamesPlayed} />
+              <StatTile labelKey="playerDetail.wins" value={formatCount(goalieStats.wins, goalieStats.gamesPlayed)} />
+              <StatTile labelKey="playerDetail.losses" value={formatCount(goalieStats.losses, goalieStats.gamesPlayed)} />
+              <StatTile
+                labelKey="playerDetail.goalsAgainstAverage"
+                value={formatGoalsAgainstAverage(goalieStats.goalsAgainstAverage, goalieStats.gamesPlayed)}
+              />
+              <StatTile
+                labelKey="playerDetail.savePercentage"
+                value={formatSavePercentage(goalieStats.savePercentage, goalieStats.gamesPlayed)}
+              />
+              <StatTile labelKey="playerDetail.shutouts" value={formatCount(goalieStats.shutouts, goalieStats.gamesPlayed)} />
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+              <StatTile labelKey="standings.colGP" value={seasonStats.gamesPlayed} />
+              <StatTile labelKey="playerDetail.goals" value={formatCount(seasonStats.goals, seasonStats.gamesPlayed)} />
+              <StatTile labelKey="playerDetail.assists" value={formatCount(seasonStats.assists, seasonStats.gamesPlayed)} />
+              <StatTile labelKey="playerDetail.points" value={formatCount(seasonStats.points, seasonStats.gamesPlayed)} />
+              <StatTile
+                labelKey="playerDetail.penaltyMinutes"
+                value={formatCount(seasonStats.penaltyMinutes, seasonStats.gamesPlayed)}
+              />
+            </div>
+          )}
         </section>
 
         {/* Career stats */}
         <section>
           <SectionHeader titleKey="playerDetail.careerStatistics" />
-          {bio.careerSeasons.length > 0 ? (
-            <div className="w-full overflow-x-auto border border-border-subtle">
-              <table className="w-full border-collapse text-sm">
-                <thead className="bg-surface-overlay text-foreground-secondary">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
-                      <T k="playerDetail.colSeason" />
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
-                      <T k="playerDetail.colTeam" />
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
-                      <T k="standings.colGP" />
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
-                      <T k="playerDetail.colG" />
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
-                      <T k="playerDetail.colA" />
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
-                      <T k="playerDetail.colPts" />
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border-subtle">
-                  {bio.careerSeasons.map((row) => (
-                    <tr key={row.season}>
-                      <td className="px-4 py-3 font-medium text-foreground-primary">{row.season}</td>
-                      <td className="px-4 py-3 text-foreground-secondary">{row.team}</td>
-                      <td className="px-4 py-3">{row.stats.gamesPlayed}</td>
-                      <td className="px-4 py-3">{row.stats.goals}</td>
-                      <td className="px-4 py-3">{row.stats.assists}</td>
-                      <td className="px-4 py-3 font-semibold text-foreground-primary">{row.stats.points}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <EmptyState textKey="playerDetail.noPriorSeasons" />
-          )}
+          <EmptyState textKey="playerDetail.noPriorSeasons" />
         </section>
 
         {/* Achievements */}
         <section>
           <SectionHeader titleKey="playerDetail.achievements" />
-          {bio.achievements.length > 0 ? (
-            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {bio.achievements.map((achievement) => (
-                <li
-                  key={achievement.label}
-                  className="border border-border-subtle bg-surface-raised px-4 py-3 text-sm font-medium text-foreground-primary"
-                >
-                  {achievement.label}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <EmptyState textKey="playerDetail.noAchievements" />
-          )}
+          <EmptyState textKey="playerDetail.noAchievements" />
         </section>
 
         {/* Recent games */}
@@ -190,31 +190,35 @@ export default async function PlayerProfilePage({
                     <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
                       <T k="playerDetail.colResult" />
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
-                      <T k="playerDetail.colG" />
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
-                      <T k="playerDetail.colA" />
-                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border-subtle">
                   {recentTeamGames.map((game) => {
                     const isHome = game.homeTeam.id === player.teamId;
                     const opponent = isHome ? game.awayTeam : game.homeTeam;
+                    const teamScore = (isHome ? game.homeScore : game.awayScore) ?? 0;
+                    const opponentScore = (isHome ? game.awayScore : game.homeScore) ?? 0;
+                    const won = teamScore > opponentScore;
                     return (
                       <tr key={game.id}>
                         <td className="px-4 py-3 text-foreground-secondary">
                           <GameDate iso={game.startTime} />
                         </td>
                         <td className="px-4 py-3 font-medium text-foreground-primary">
-                          {isHome ? "vs" : "@"} {opponent.name}
+                          <T k={isHome ? "playerDetail.vsHome" : "playerDetail.vsAway"} vars={{ team: opponent.name }} />
                         </td>
                         <td className="px-4 py-3">
-                          {game.homeScore} – {game.awayScore}
+                          <span className={won ? "font-semibold text-foreground-primary" : "text-foreground-secondary"}>
+                            <T k={won ? "playerDetail.resultWin" : "playerDetail.resultLoss"} />
+                          </span>{" "}
+                          {teamScore} – {opponentScore}
+                          {game.decidedBy === "SHOOTOUT" && (
+                            <>
+                              {" "}
+                              <T k="game.shootoutAbbr" />
+                            </>
+                          )}
                         </td>
-                        <td className="px-4 py-3">0</td>
-                        <td className="px-4 py-3">0</td>
                       </tr>
                     );
                   })}
@@ -224,29 +228,6 @@ export default async function PlayerProfilePage({
           ) : (
             <EmptyState textKey="playerDetail.noGamesPlayed" />
           )}
-        </section>
-
-        {/* Related news */}
-        <section>
-          <SectionHeader titleKey="playerDetail.relatedNews" action={{ labelKey: "playerDetail.allNews", href: "/news" }} />
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {relatedNews.map((item) => (
-              <Card key={item.title}>
-                <CardContent className="flex flex-col gap-2 p-5">
-                  <span className="text-xs font-medium uppercase tracking-wide text-foreground-secondary">
-                    {item.daysAgo === 1 ? (
-                      <T k="playerDetail.dayAgo" />
-                    ) : (
-                      <T k="playerDetail.daysAgo" vars={{ n: item.daysAgo }} />
-                    )}
-                  </span>
-                  <p className="font-display text-base font-semibold leading-snug text-foreground-primary">
-                    {item.title}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
         </section>
       </div>
     </div>

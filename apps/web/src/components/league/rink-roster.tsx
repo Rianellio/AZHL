@@ -1,18 +1,21 @@
 "use client";
 
-import { RINK_SLOT_POSITION, type RinkSlot } from "@/lib/mock/rink-positions";
+import Link from "next/link";
+import type { PlayerSummaryDTO } from "@azhl/types";
+import { RINK_SLOT_POSITION, assignPlayersToSlots, type RinkSlot } from "@/lib/mock/rink-positions";
 import { rinkSlotTranslationKey } from "@/lib/i18n/position-key";
 import { useTranslation } from "@/lib/i18n/use-translation";
 
 const SLOT_ORDER: RinkSlot[] = ["G", "LD", "RD", "LW", "C", "RW"];
 
 /**
- * Position-only lineup template — no player data at all right now (see requirements: no
- * names yet, hover animation only). Once the CMS exists, each marker becomes a real player
- * (photo, number, name, click-through to their profile) without this rink layout changing;
- * only the content of each marker gets swapped.
+ * Roster by position on the rink — not an official starting lineup (no lineup data exists). Each
+ * slot shows the assigned player's jersey number and links to their profile; the name appears on hover/focus. A slot with no player falls back to the
+ * position-only marker, so a partial or empty roster still renders the full rink.
  */
-export function RinkRoster({ accent }: { accent: string }) {
+export function RinkRoster({ players, accent }: { players: PlayerSummaryDTO[]; accent: string }) {
+  const lineup = assignPlayersToSlots(players);
+
   return (
     <div className="relative mx-auto aspect-[4/7] w-full max-w-md overflow-visible">
       <RinkMarkings />
@@ -25,7 +28,7 @@ export function RinkRoster({ accent }: { accent: string }) {
             className="absolute -translate-x-1/2 -translate-y-1/2"
             style={{ left: `${position.left}%`, top: `${position.top}%` }}
           >
-            <PositionMarker slot={slot} accent={accent} />
+            <PositionMarker slot={slot} accent={accent} player={lineup[slot]} />
           </div>
         );
       })}
@@ -33,31 +36,82 @@ export function RinkRoster({ accent }: { accent: string }) {
   );
 }
 
-function PositionMarker({ slot, accent }: { slot: RinkSlot; accent: string }) {
+const MARKER_CLASS =
+  "group/marker relative flex h-16 w-16 items-center justify-center rounded-full border-2 border-border-strong bg-surface-raised transition-all duration-300 ease-out hover:scale-110 hover:border-[var(--marker-glow)] focus-visible:scale-110 focus-visible:border-[var(--marker-glow)] focus-visible:outline-none sm:h-[72px] sm:w-[72px]";
+
+function PositionMarker({
+  slot,
+  accent,
+  player,
+}: {
+  slot: RinkSlot;
+  accent: string;
+  player: PlayerSummaryDTO | undefined;
+}) {
   const { t } = useTranslation();
   const key = rinkSlotTranslationKey(slot);
-  return (
+  const slotLabel = key ? t(key) : slot;
+  const glowStyle = { "--marker-glow": accent } as React.CSSProperties;
+
+  const glow = (
     <div
-      className="group/marker relative flex h-16 w-16 items-center justify-center rounded-full border-2 border-border-strong bg-surface-raised transition-all duration-300 ease-out hover:scale-110 hover:border-[var(--marker-glow)] sm:h-[72px] sm:w-[72px]"
-      style={{ "--marker-glow": accent } as React.CSSProperties}
-      role="img"
-      aria-label={key ? t(key) : slot}
+      className="pointer-events-none absolute inset-0 rounded-full opacity-0 blur-lg transition-opacity duration-300 ease-out group-hover/marker:opacity-60 group-focus-visible/marker:opacity-60"
+      style={{ backgroundColor: "var(--marker-glow)" }}
+    />
+  );
+
+  if (!player) {
+    return (
+      <div className={MARKER_CLASS} style={glowStyle} role="img" aria-label={slotLabel}>
+        {glow}
+        <span className="font-display text-foreground-secondary group-hover/marker:text-foreground-primary relative text-sm font-bold uppercase tracking-wide transition-colors duration-300 ease-out sm:text-base">
+          {slot}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      href={`/players/${player.id}`}
+      className={MARKER_CLASS}
+      style={glowStyle}
+      aria-label={`${player.fullName}, #${player.jerseyNumber}, ${slotLabel}`}
     >
-      <div
-        className="pointer-events-none absolute inset-0 rounded-full opacity-0 blur-lg transition-opacity duration-300 ease-out group-hover/marker:opacity-60"
-        style={{ backgroundColor: "var(--marker-glow)" }}
-      />
-      <span className="relative font-display text-sm font-bold uppercase tracking-wide text-foreground-secondary transition-colors duration-300 ease-out group-hover/marker:text-foreground-primary sm:text-base">
-        {slot}
+      {glow}
+      <span className="relative flex flex-col items-center leading-none">
+        <span className="font-display text-foreground-primary text-xl font-bold sm:text-2xl">
+          {player.jerseyNumber}
+        </span>
+        <span className="font-display text-foreground-secondary mt-1 text-[10px] font-bold uppercase tracking-wide">
+          {slot}
+        </span>
       </span>
-    </div>
+      <span className="border-border-subtle bg-surface-base text-foreground-primary pointer-events-none absolute top-full mt-2 whitespace-nowrap rounded-md border px-2 py-1 text-xs font-semibold opacity-0 transition-opacity duration-200 group-hover/marker:opacity-100 group-focus-visible/marker:opacity-100">
+        {player.fullName}
+      </span>
+    </Link>
   );
 }
 
 function RinkMarkings() {
   return (
-    <svg viewBox="0 0 400 700" className="absolute inset-0 h-full w-full" fill="none" aria-hidden="true">
-      <rect x="10" y="10" width="380" height="680" rx="60" stroke="#3A3A40" strokeWidth="2" fill="#0F0F11" />
+    <svg
+      viewBox="0 0 400 700"
+      className="absolute inset-0 h-full w-full"
+      fill="none"
+      aria-hidden="true"
+    >
+      <rect
+        x="10"
+        y="10"
+        width="380"
+        height="680"
+        rx="60"
+        stroke="#3A3A40"
+        strokeWidth="2"
+        fill="#0F0F11"
+      />
       <line x1="10" y1="350" x2="390" y2="350" stroke="#F5F5F5" strokeWidth="2" opacity="0.5" />
       <line x1="10" y1="175" x2="390" y2="175" stroke="#3FA7D6" strokeWidth="2" opacity="0.4" />
       <line x1="10" y1="525" x2="390" y2="525" stroke="#3FA7D6" strokeWidth="2" opacity="0.4" />

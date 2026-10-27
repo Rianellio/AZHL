@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { serverT } from "@/lib/i18n/server";
 import { notFound } from "next/navigation";
 import { getNewsArticleBySlug } from "@/lib/server/services/news.service";
 import { ArticleDate } from "@/components/league/article-date";
@@ -12,7 +13,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const article = await getNewsArticleBySlug(slug);
-  if (!article) return { title: "Article not found" };
+  if (!article) return { title: serverT("notFound.title") };
   return { title: article.title, description: article.excerpt };
 }
 

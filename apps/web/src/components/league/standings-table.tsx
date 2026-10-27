@@ -11,17 +11,13 @@ import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n/use-translation";
 import type { TranslationKey } from "@/lib/i18n/dictionaries";
 
-/**
- * "otWins" has no backing field on the Standing model (schema tracks only wins/losses/
- * otLosses — a single win isn't split into regulation vs. overtime). Rendered as a real column
- * per spec, always 0 until the schema gains a dedicated field — not derived from anything, so
- * it can't drift into showing a fake number. Flagged in the Standings page hand-off.
- */
+/** AZHL has no overtime: W/L are regulation results, SOW/SOL shootout results, so
+ * GP = W + SOW + SOL + L. */
 type SortKey =
   | "gamesPlayed"
   | "wins"
-  | "otWins"
-  | "otLosses"
+  | "shootoutWins"
+  | "shootoutLosses"
   | "losses"
   | "goalsFor"
   | "goalsAgainst"
@@ -31,8 +27,8 @@ type SortKey =
 const COLUMNS: { key: SortKey; labelKey: TranslationKey }[] = [
   { key: "gamesPlayed", labelKey: "standings.colGP" },
   { key: "wins", labelKey: "standings.colW" },
-  { key: "otWins", labelKey: "standings.colOTW" },
-  { key: "otLosses", labelKey: "standings.colOTL" },
+  { key: "shootoutWins", labelKey: "standings.colSOW" },
+  { key: "shootoutLosses", labelKey: "standings.colSOL" },
   { key: "losses", labelKey: "standings.colL" },
   { key: "goalsFor", labelKey: "standings.colGF" },
   { key: "goalsAgainst", labelKey: "standings.colGA" },
@@ -46,8 +42,6 @@ function diffOf(standing: StandingDTO): number {
 
 function sortValue(standing: StandingDTO, key: SortKey): number {
   switch (key) {
-    case "otWins":
-      return 0;
     case "diff":
       return diffOf(standing);
     default:
@@ -119,11 +113,11 @@ export function StandingsTable({ standings }: { standings: StandingDTO[] }) {
               <TableCell className={cn(sortKey === "wins" && "font-semibold text-foreground-primary")}>
                 {standing.wins}
               </TableCell>
-              <TableCell className={cn(sortKey === "otWins" && "font-semibold text-foreground-primary")}>
-                0
+              <TableCell className={cn(sortKey === "shootoutWins" && "font-semibold text-foreground-primary")}>
+                {standing.shootoutWins}
               </TableCell>
-              <TableCell className={cn(sortKey === "otLosses" && "font-semibold text-foreground-primary")}>
-                {standing.otLosses}
+              <TableCell className={cn(sortKey === "shootoutLosses" && "font-semibold text-foreground-primary")}>
+                {standing.shootoutLosses}
               </TableCell>
               <TableCell className={cn(sortKey === "losses" && "font-semibold text-foreground-primary")}>
                 {standing.losses}
