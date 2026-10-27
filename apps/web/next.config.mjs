@@ -1,4 +1,8 @@
 /* global process */
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isDev = process.env.NODE_ENV !== "production";
 
 /**
@@ -37,6 +41,8 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  outputFileTracingRoot: path.join(__dirname, "../../"),
+  serverExternalPackages: ["@prisma/client", "prisma"],
   transpilePackages: ["@azhl/ui", "@azhl/utils", "@azhl/types", "@azhl/database"],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
