@@ -43,10 +43,12 @@ export function Nav() {
                 href={link.href}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "text-xs font-semibold uppercase tracking-wide transition-colors duration-150",
+                  // Active = 2px accent underline (transparent otherwise, so items never shift);
+                  // keyboard focus gets a ring via focus-visible only — no box on mouse click.
+                  "rounded-sm border-b-2 py-1 text-xs font-semibold uppercase tracking-wide outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-surface-base",
                   isActive
-                    ? "text-foreground-primary"
-                    : "text-foreground-secondary hover:text-foreground-primary",
+                    ? "border-accent text-foreground-primary"
+                    : "border-transparent text-foreground-secondary hover:text-foreground-primary",
                 )}
               >
                 {t(link.labelKey)}
@@ -81,17 +83,24 @@ export function Nav() {
           aria-label={t("nav.primaryLabel")}
         >
           <ul className="flex flex-col gap-4">
-            {LINKS.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className="text-sm font-semibold uppercase tracking-wide text-foreground-primary"
-                  onClick={() => setOpen(false)}
-                >
-                  {t(link.labelKey)}
-                </Link>
-              </li>
-            ))}
+            {LINKS.map((link) => {
+              const isActive = pathname === link.href || pathname.startsWith(`${link.href}/`);
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    aria-current={isActive ? "page" : undefined}
+                    className={cn(
+                      "block rounded-sm border-l-2 pl-3 text-sm font-semibold uppercase tracking-wide outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                      isActive ? "border-accent text-foreground-primary" : "border-transparent text-foreground-secondary",
+                    )}
+                    onClick={() => setOpen(false)}
+                  >
+                    {t(link.labelKey)}
+                  </Link>
+                </li>
+              );
+            })}
             <li className="pt-2">
               <Button asChild size="sm" className="w-full rounded-sm">
                 <Link href="/contacts" onClick={() => setOpen(false)}>

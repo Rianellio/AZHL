@@ -74,68 +74,6 @@
   50% { opacity: 1; }
 }
 
-/* Slow animated gradient wash for the Teams club-select panels (see team-select-panel.tsx). */
-@keyframes panel-gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-/*
- * Cinematic lighting rig for the Teams club-select hover atmosphere — glow/spotlight, diagonal
- * streaks, haze, depth gradients, and floating particles, composited with mix-blend-mode: screen
- * so overlaps build up light additively instead of flattening into a solid tint. See
- * components/league/team-select-panel.tsx.
- */
-
-/* Soft ambient glow and the tighter spotlight behind the logo — slow breathing pulse. */
-@keyframes glow-breathe {
-  0%, 100% { opacity: 0.55; transform: translate(-50%, -50%) scale(1); }
-  50% { opacity: 0.85; transform: translate(-50%, -50%) scale(1.1); }
-}
-
-/* Diagonal light streaks sweeping slowly across the panel, left edge to right edge. */
-@keyframes streak-sweep {
-  0% { transform: translateX(-30%); opacity: 0; }
-  12% { opacity: 1; }
-  85% { opacity: 1; }
-  100% { transform: translateX(130%); opacity: 0; }
-}
-
-/* Broad atmospheric haze, very slowly drifting and breathing in density. */
-@keyframes haze-drift {
-  0%, 100% { transform: translate(-4%, -3%) scale(1); opacity: 0.28; }
-  50% { transform: translate(4%, 4%) scale(1.15); opacity: 0.42; }
-}
-
-/* Very small particles, gently floating in place rather than rising. */
-@keyframes particle-float {
-  0%, 100% { transform: translate(0, 0); opacity: 0.2; }
-  50% { transform: translate(5px, -10px); opacity: 0.75; }
-}
-
-/* Subtle diagonal reflection sweeping across the panel surface, like light on glass. */
-@keyframes reflection-sweep {
-  0% { transform: translateX(-120%) skewX(-14deg); opacity: 0; }
-  20% { opacity: 1; }
-  55% { opacity: 1; }
-  100% { transform: translateX(220%) skewX(-14deg); opacity: 0; }
-}
-
-/*
- * Teams club-select screen: hovering (or keyboard-focusing) one panel dims/desaturates the others via :has(), no JS
- * coordination needed. See app/teams/page.tsx and components/league/team-select-panel.tsx.
- */
-.team-select-grid .team-select-panel {
-  transition:
-    opacity 500ms ease,
-    filter 500ms ease;
-}
-.team-select-grid:has(.team-select-panel:hover) .team-select-panel:not(:hover),
-.team-select-grid:has(.team-select-panel:focus-visible) .team-select-panel:not(:focus-visible) {
-  opacity: 0.16;
-  filter: grayscale(1) brightness(0.2);
-}
-
 /* One-time entrance for card grids on the League page — staggered via animation-delay per card. */
 @keyframes fade-in-up {
   from {

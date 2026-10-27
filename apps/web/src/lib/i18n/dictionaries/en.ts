@@ -256,6 +256,16 @@ export const en = {
   "position.leftDefense": "Left Defense",
   "position.rightDefense": "Right Defense",
 
+  // Player bio additions
+  "playerDetail.bioAge": "Age",
+  "playerDetail.bioPhysical": "Height / Weight",
+  "playerDetail.bioShoots": "Shoots",
+  "playerDetail.bioCitizenship": "Citizenship",
+  "playerDetail.shootsLeft": "Left (L)",
+  "playerDetail.shootsRight": "Right (R)",
+  "playerDetail.badgeJunior": "Junior (U18)",
+  "playerDetail.badgeVeteran": "Veteran",
+
   // Partners strip
 
   // 404 page
@@ -276,6 +286,17 @@ export const en = {
   "meta.stats": "Statistics",
   "meta.teams": "Teams",
   "meta.game": "{away} vs {home}",
+  "teams.title": "Teams",
+  "teams.clubs.one": "{n} club",
+  "teams.clubs.few": "{n} clubs",
+  "teams.clubs.many": "{n} clubs",
+  "teams.clubs.other": "{n} clubs",
+  "teams.season": "Season {label}",
+  "teams.rank": "Place",
+  "teams.points": "Points",
+  "teams.nextMatch": "Next match",
+  "teams.roster": "Players",
+  "teams.cardLabel": "Open the {team} team page",
 } as const;
 
 export type TranslationKey = keyof typeof en;

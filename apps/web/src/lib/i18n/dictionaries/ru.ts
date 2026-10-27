@@ -232,6 +232,16 @@ export const ru = {
   "position.leftDefense": "Левый защитник",
   "position.rightDefense": "Правый защитник",
 
+  // Player bio additions
+  "playerDetail.bioAge": "Возраст",
+  "playerDetail.bioPhysical": "Рост / Вес",
+  "playerDetail.bioShoots": "Хват клюшки",
+  "playerDetail.bioCitizenship": "Гражданство",
+  "playerDetail.shootsLeft": "Левый (L)",
+  "playerDetail.shootsRight": "Правый (R)",
+  "playerDetail.badgeJunior": "Юниор (U18)",
+  "playerDetail.badgeVeteran": "Ветеран",
+
 
   "notFound.title": "Страница не найдена",
   "notFound.description": "Страница, которую вы ищете, не существует.",
@@ -250,4 +260,15 @@ export const ru = {
   "meta.stats": "Статистика",
   "meta.teams": "Команды",
   "meta.game": "{away} — {home}",
+  "teams.title": "Команды",
+  "teams.clubs.one": "{n} клуб",
+  "teams.clubs.few": "{n} клуба",
+  "teams.clubs.many": "{n} клубов",
+  "teams.clubs.other": "{n} клуба",
+  "teams.season": "Сезон {label}",
+  "teams.rank": "Место",
+  "teams.points": "Очки",
+  "teams.nextMatch": "Следующий матч",
+  "teams.roster": "Игроков",
+  "teams.cardLabel": "Открыть страницу команды {team}",
 } satisfies Record<TranslationKey, string>;

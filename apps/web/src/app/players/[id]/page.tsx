@@ -7,6 +7,7 @@ import { getPlayerById } from "@/lib/server/services/player.service";
 import { getCurrentSeasonSchedule } from "@/lib/server/services/schedule.service";
 import { getMockPlayerStats } from "@/lib/mock/player-stats";
 import { getMockGoalieStats } from "@/lib/mock/goalie-stats";
+import { getMockPlayerBio } from "@/lib/mock/player-bio";
 import { formatCount, formatGoalsAgainstAverage, formatSavePercentage } from "@/lib/stat-format";
 import { ImagePlaceholder } from "@/components/ui/image-placeholder";
 import { StatTile } from "@/components/league/stat-tile";
@@ -39,6 +40,7 @@ export default async function PlayerProfilePage({
 
   const schedule = await getCurrentSeasonSchedule();
 
+  const bio = getMockPlayerBio(player);
   const seasonStats = getMockPlayerStats(player);
   const goalieStats = player.position === "G" ? getMockGoalieStats(player) : null;
   const posKey = positionTranslationKey(player.position);
@@ -52,7 +54,7 @@ export default async function PlayerProfilePage({
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-16">
-      {/* Portrait + identity */}
+      {/* Portrait + Identity + Flashscore Bio */}
       <div className="mb-14 grid grid-cols-1 gap-8 sm:grid-cols-[220px_1fr]">
         <ImagePlaceholder
           ratio="aspect-[3/4]"
@@ -60,18 +62,69 @@ export default async function PlayerProfilePage({
           icon={<User className="h-16 w-16 text-foreground-tertiary" strokeWidth={1} />}
         />
         <div className="flex flex-col justify-end gap-3">
-          <Link
-            href={`/teams/${player.team.slug}`}
-            className="w-fit text-xs font-semibold uppercase tracking-wide text-accent hover:text-accent-hover"
-          >
-            {player.team.name}
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/teams/${player.team.slug}`}
+              className="w-fit text-xs font-semibold uppercase tracking-wide text-accent hover:text-accent-hover"
+            >
+              {player.team.name}
+            </Link>
+            {bio.category === "junior" && (
+              <span className="rounded border border-accent/30 bg-accent/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent">
+                <T k="playerDetail.badgeJunior" />
+              </span>
+            )}
+            {bio.category === "veteran" && (
+              <span className="rounded border border-border-subtle bg-surface-raised px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-foreground-secondary">
+                <T k="playerDetail.badgeVeteran" />
+              </span>
+            )}
+          </div>
+
           <h1 className="font-display text-5xl font-bold uppercase leading-none text-foreground-primary">
             {player.fullName}
           </h1>
+
           <p className="text-sm font-medium uppercase tracking-wide text-foreground-secondary">
             #{player.jerseyNumber} &middot; {posKey ? <T k={posKey} /> : player.position}
           </p>
+
+          {/* Flashscore Bio Grid */}
+          <dl className="mt-3 grid grid-cols-2 gap-3 border-t border-border-subtle pt-4 sm:grid-cols-4 sm:gap-4">
+            <div className="flex flex-col">
+              <dt className="text-[11px] font-medium uppercase tracking-wider text-foreground-secondary">
+                <T k="playerDetail.bioAge" />
+              </dt>
+              <dd className="font-display text-base font-semibold text-foreground-primary">
+                {bio.age}{" "}
+                <span className="text-xs font-normal text-foreground-tertiary">({bio.birthDate})</span>
+              </dd>
+            </div>
+            <div className="flex flex-col">
+              <dt className="text-[11px] font-medium uppercase tracking-wider text-foreground-secondary">
+                <T k="playerDetail.bioPhysical" />
+              </dt>
+              <dd className="font-display text-base font-semibold text-foreground-primary">
+                {bio.heightCm} см / {bio.weightKg} кг
+              </dd>
+            </div>
+            <div className="flex flex-col">
+              <dt className="text-[11px] font-medium uppercase tracking-wider text-foreground-secondary">
+                <T k="playerDetail.bioShoots" />
+              </dt>
+              <dd className="font-display text-base font-semibold text-foreground-primary">
+                <T k={bio.shoots === "L" ? "playerDetail.shootsLeft" : "playerDetail.shootsRight"} />
+              </dd>
+            </div>
+            <div className="flex flex-col">
+              <dt className="text-[11px] font-medium uppercase tracking-wider text-foreground-secondary">
+                <T k="playerDetail.bioCitizenship" />
+              </dt>
+              <dd className="flex items-center gap-1.5 font-display text-base font-semibold text-foreground-primary">
+                <span>🇦🇿</span> {bio.citizenshipCode}
+              </dd>
+            </div>
+          </dl>
         </div>
       </div>
 
@@ -141,7 +194,6 @@ export default async function PlayerProfilePage({
                 </thead>
                 <tbody className="divide-y divide-border-subtle">
                   {recentTeamGames.map((game) => {
-                    // Shown from the player's team's side: its score first, then W/L (+ SO).
                     const isHome = game.homeTeam.id === player.teamId;
                     const opponent = isHome ? game.awayTeam : game.homeTeam;
                     const teamScore = (isHome ? game.homeScore : game.awayScore) ?? 0;

@@ -35,3 +35,4 @@ test-results/
 # misc
 *.tsbuildinfo
 .env.vercel
+.claude/settings.json

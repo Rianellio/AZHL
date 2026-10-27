@@ -232,6 +232,16 @@ export const az = {
   "position.leftDefense": "Sol Müdafiəçi",
   "position.rightDefense": "Sağ Müdafiəçi",
 
+  // Player bio additions
+  "playerDetail.bioAge": "Yaş",
+  "playerDetail.bioPhysical": "Boy / Çəki",
+  "playerDetail.bioShoots": "Əl (tutuş)",
+  "playerDetail.bioCitizenship": "Vətəndaşlıq",
+  "playerDetail.shootsLeft": "Sol (L)",
+  "playerDetail.shootsRight": "Sağ (R)",
+  "playerDetail.badgeJunior": "Yeniyetmə (U18)",
+  "playerDetail.badgeVeteran": "Veteran",
+
 
   "notFound.title": "Səhifə tapılmadı",
   "notFound.description": "Axtardığınız səhifə mövcud deyil.",
@@ -250,4 +260,15 @@ export const az = {
   "meta.stats": "Statistika",
   "meta.teams": "Komandalar",
   "meta.game": "{away} — {home}",
+  "teams.title": "Komandalar",
+  "teams.clubs.one": "{n} klub",
+  "teams.clubs.few": "{n} klub",
+  "teams.clubs.many": "{n} klub",
+  "teams.clubs.other": "{n} klub",
+  "teams.season": "{label} mövsümü",
+  "teams.rank": "Yer",
+  "teams.points": "Xal",
+  "teams.nextMatch": "Növbəti oyun",
+  "teams.roster": "Oyunçu",
+  "teams.cardLabel": "{team} komandasının səhifəsini aç",
 } satisfies Record<TranslationKey, string>;
