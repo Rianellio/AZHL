@@ -28,7 +28,6 @@ export const ru = {
   "footer.players": "Игроки",
   "footer.partners": "Партнёры",
   "footer.copyright": "© {year} AZHL. Все права защищены.",
-  "footer.developedBy": "Разработка сайта:",
 
   "common.viewAll": "СМОТРЕТЬ ВСЕ",
   "common.viewFullTable": "ПОСМОТРЕТЬ ПОЛНУЮ ТАБЛИЦУ",
