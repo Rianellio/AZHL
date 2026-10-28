@@ -128,7 +128,7 @@ export default async function LeaguePage() {
       </section>
 
       {/* Official Regulations Section */}
-      <section className="border-t border-border-subtle bg-surface-base py-16">
+      <section id="regulations" className="border-t border-border-subtle bg-surface-base py-16">
         <div className="mx-auto w-full max-w-7xl px-6">
           <div className="flex flex-col gap-2">
             <T

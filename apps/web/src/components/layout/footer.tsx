@@ -11,6 +11,7 @@ const LEAGUE_LINKS: { href: string; labelKey: TranslationKey }[] = [
   { href: "/league", labelKey: "footer.aboutAzhl" },
   { href: "/teams", labelKey: "nav.teams" },
   { href: "/players", labelKey: "footer.players" },
+  { href: "/league#regulations", labelKey: "footer.regulations" },
 ];
 
 const INFO_LINKS: { href: string; labelKey: TranslationKey }[] = [

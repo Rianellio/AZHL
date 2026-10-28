@@ -28,6 +28,7 @@ export const az = {
   "footer.players": "Oyunçular",
   "footer.partners": "Tərəfdaşlar",
   "footer.copyright": "© {year} AZHL. Bütün hüquqlar qorunur.",
+  "footer.regulations": "Reqlament",
 
   "common.viewAll": "HAMISINA BAX",
   "common.viewFullTable": "TAM CƏDVƏLƏ BAX",

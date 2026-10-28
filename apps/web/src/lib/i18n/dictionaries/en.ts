@@ -36,6 +36,7 @@ export const en = {
   "footer.players": "Players",
   "footer.partners": "Partners",
   "footer.copyright": "© {year} AZHL. All rights reserved.",
+  "footer.regulations": "Regulations",
 
   // Shared / common
   "common.viewAll": "View all",
