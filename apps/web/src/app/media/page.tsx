@@ -57,7 +57,7 @@ export default function MediaPage() {
                 <Instagram className="h-4 w-4 text-foreground-secondary" strokeWidth={1.75} aria-hidden="true" />
                 Instagram
               </h2>
-              <p className="mt-1 text-sm text-foreground-secondary">@azerbaijan.icehockey</p>
+              <p className="mt-1 text-sm text-foreground-secondary">@azhlofficial</p>
             </div>
             <Button asChild size="lg" className="w-full rounded-sm">
               <a href={LEAGUE_CONTACT.instagramUrl} target="_blank" rel="noopener noreferrer">
