@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { serverT } from "@/lib/i18n/server";
 import Link from "next/link";
-import { Users, CalendarDays, Swords, Crown, Trophy } from "lucide-react";
+import { Users, CalendarDays, Swords, Crown, Trophy, FileText, Download, ExternalLink } from "lucide-react";
+import { Button } from "@azhl/ui";
 import { getAllTeams } from "@/lib/server/services/team.service";
 import { Hero } from "@/components/league/hero";
 import { SectionHeader } from "@/components/league/section-header";
@@ -102,7 +103,7 @@ export default async function LeaguePage() {
         </div>
       </section>
 
-      {/* Championship Trophy — deliberately abstract placeholder, no invented trophy design */}
+      {/* Championship Trophy */}
       <section className="border-t border-border-subtle bg-surface-raised/40">
         <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-6 py-20 text-center">
           <div className="flex h-16 w-16 items-center justify-center rounded-full border border-dashed border-border-strong text-foreground-tertiary">
@@ -126,8 +127,75 @@ export default async function LeaguePage() {
         </div>
       </section>
 
+      {/* Official Regulations Section */}
+      <section className="border-t border-border-subtle bg-surface-base py-16">
+        <div className="mx-auto w-full max-w-7xl px-6">
+          <div className="flex flex-col gap-2">
+            <T
+              k="league.regulationsEyebrow"
+              as="p"
+              className="text-xs font-bold uppercase tracking-wider text-accent"
+            />
+            <T
+              k="league.regulationsTitle"
+              as="h2"
+              className="font-display text-3xl font-extrabold uppercase text-foreground-primary sm:text-4xl"
+            />
+            <T
+              k="league.regulationsDesc"
+              as="p"
+              className="max-w-2xl text-sm text-foreground-secondary"
+            />
+          </div>
+
+          <div className="mt-8 flex flex-col items-start justify-between gap-6 rounded-lg border border-border-subtle bg-surface-raised/50 p-6 sm:flex-row sm:items-center">
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-border-subtle bg-surface-overlay text-accent">
+                <FileText className="h-6 w-6" aria-hidden="true" />
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <T
+                  k="league.regulationsDocTitle"
+                  as="h3"
+                  className="font-semibold text-foreground-primary"
+                />
+                <T
+                  k="league.regulationsDocMeta"
+                  as="p"
+                  className="text-xs text-foreground-tertiary"
+                />
+              </div>
+            </div>
+
+            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+              <Button asChild variant="secondary" size="sm">
+                <a
+                  href="/documents/azhl-reqlament-2026-2027.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  <span><T k="league.viewPdf" /></span>
+                </a>
+              </Button>
+              <Button asChild size="sm">
+                <a
+                  href="/documents/azhl-reqlament-2026-2027.pdf"
+                  download="AZHL_Reqlament_2026_2027.pdf"
+                  className="flex items-center gap-2"
+                >
+                  <Download className="h-4 w-4" />
+                  <span><T k="league.downloadPdf" /></span>
+                </a>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Partners */}
-      <section id="partners" className="mx-auto w-full max-w-7xl scroll-mt-24 px-6 py-16">
+      <section id="partners" className="border-t border-border-subtle mx-auto w-full max-w-7xl scroll-mt-24 px-6 py-16">
         <SectionHeader titleKey="home.partners" />
         <PartnersStrip />
       </section>

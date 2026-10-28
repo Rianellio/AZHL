@@ -28,7 +28,6 @@ export const ru = {
   "footer.players": "Игроки",
   "footer.partners": "Партнёры",
   "footer.copyright": "© {year} AZHL. Все права защищены.",
-  "footer.developedBy": "Разработка сайта:",
 
   "common.viewAll": "СМОТРЕТЬ ВСЕ",
   "common.viewFullTable": "ПОСМОТРЕТЬ ПОЛНУЮ ТАБЛИЦУ",
@@ -74,6 +73,13 @@ export const ru = {
   "league.championshipTrophy": "Кубок чемпиона",
   "league.comingSoon": "Скоро",
   "league.trophyBlurb": "Кубок чемпиона AZHL будет представлен перед первым Финалом чемпионата лиги.",
+  "league.regulationsTitle": "Регламент лиги",
+  "league.regulationsEyebrow": "Официальные документы",
+  "league.regulationsDesc": "Официальный регламент Чемпионата Азербайджанской хоккейной лиги (AZHL) по хоккею с шайбой сезона 2026/2027.",
+  "league.regulationsDocTitle": "Регламент AZHL 2026/2027 (AZ)",
+  "league.regulationsDocMeta": "PDF • 24 страницы • Утвердил: Мамедов Г. А.",
+  "league.viewPdf": "Смотреть (PDF)",
+  "league.downloadPdf": "Скачать",
 
   "teamDetail.rosterByPosition": "Состав по позициям",
   "teamDetail.fullSquad": "Полный состав",

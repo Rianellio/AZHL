@@ -28,7 +28,6 @@ export const az = {
   "footer.players": "Oyunçular",
   "footer.partners": "Tərəfdaşlar",
   "footer.copyright": "© {year} AZHL. Bütün hüquqlar qorunur.",
-  "footer.developedBy": "Veb-saytın tərtibatçıları:",
 
   "common.viewAll": "HAMISINA BAX",
   "common.viewFullTable": "TAM CƏDVƏLƏ BAX",
@@ -75,7 +74,14 @@ export const az = {
   "league.comingSoon": "Tezliklə",
   "league.trophyBlurb":
     "AZHL Çempionluq Kuboku liqanın ilk Çempionluq Finalından əvvəl təqdim ediləcək.",
-
+  "league.regulationsTitle": "Liqanın Reqlamenti",
+  "league.regulationsEyebrow": "Rəsmi Sənədlər",
+  "league.regulationsDesc": "Azərbaycan Hokkey Liqasının (AZHL) şaybalı xokkey üzrə 2026/2027 mövsümünün rəsmi Çempionat Reqlamenti.",
+  "league.regulationsDocTitle": "AZHL Reqlament 2026/2027 (AZ)",
+  "league.regulationsDocMeta": "PDF • 24 səhifə • Təsdiq edilib: Məmmədov Q. A.",
+  "league.viewPdf": "Baxış (PDF)",
+  "league.downloadPdf": "Yüklə",
+  
   "teamDetail.rosterByPosition": "Mövqelər üzrə heyət",
   "teamDetail.fullSquad": "Tam Heyət",
   "teamDetail.teamStatistics": "Komanda Statistikası",

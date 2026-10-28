@@ -36,7 +36,6 @@ export const en = {
   "footer.players": "Players",
   "footer.partners": "Partners",
   "footer.copyright": "© {year} AZHL. All rights reserved.",
-  "footer.developedBy": "Developed by",
 
   // Shared / common
   "common.viewAll": "View all",
@@ -86,7 +85,14 @@ export const en = {
   "league.comingSoon": "Coming Soon",
   "league.trophyBlurb":
     "The AZHL Championship Trophy will be revealed ahead of the league's first Championship Final.",
-
+  "league.regulationsTitle": "Official Regulations",
+  "league.regulationsEyebrow": "Documents",
+  "league.regulationsDesc": "Official Championship Regulations of the Azerbaijan Hockey League (AZHL) for the 2026/2027 season.",
+  "league.regulationsDocTitle": "AZHL Regulations 2026/2027 (AZ)",
+  "league.regulationsDocMeta": "PDF • 24 pages • Approved: Mammadov G. A.",
+  "league.viewPdf": "View PDF",
+  "league.downloadPdf": "Download",
+  
   // Team detail page
   "teamDetail.rosterByPosition": "Roster by Position",
   "teamDetail.fullSquad": "Full Squad",

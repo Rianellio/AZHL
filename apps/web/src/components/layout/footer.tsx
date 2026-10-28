@@ -56,27 +56,6 @@ export function Footer() {
           <div>
             {t("footer.copyright", { year: new Date().getFullYear() })}
           </div>
-
-          <div className="flex items-center gap-1.5 text-foreground-secondary">
-            <span>{t("footer.developedBy")}</span>
-            <a
-              href="https://iusifli.dev"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-foreground-primary transition-colors hover:text-accent"
-            >
-              Ismail Iusifli
-            </a>
-            <span>&</span>
-            <a
-              href="https://www.linkedin.com/in/javidbayramli/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-foreground-primary transition-colors hover:text-accent"
-            >
-              Javid Bayramli
-            </a>
-          </div>
         </div>
       </div>
     </footer>
