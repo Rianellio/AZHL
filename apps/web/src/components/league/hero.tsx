@@ -7,12 +7,8 @@ import { useTranslation } from "@/lib/i18n/use-translation";
 import type { TranslationKey } from "@/lib/i18n/dictionaries";
 
 export interface HeroProps {
-  /** Translated eyebrow text. Mutually exclusive with `seasonYearRange`. */
   eyebrowKey?: TranslationKey;
-  /** e.g. "2026-2027" — Hero appends the translated word for "Season" itself, since the
-   * composition needs `t()` and the Server Component caller can't call hooks. */
   seasonYearRange?: string | undefined;
-  /** Translated title; each "\n" in the dictionary value starts a new display line. */
   titleKey: TranslationKey;
   taglineKey?: TranslationKey;
   cta?: { labelKey: TranslationKey; href: string };
@@ -20,21 +16,24 @@ export interface HeroProps {
 
 export function Hero({ eyebrowKey, seasonYearRange, titleKey, taglineKey, cta }: HeroProps) {
   const { t } = useTranslation();
-  const eyebrowText = seasonYearRange ? `${seasonYearRange} ${t("home.seasonSuffix")}` : eyebrowKey && t(eyebrowKey);
+  const eyebrowText = seasonYearRange
+    ? `${seasonYearRange} ${t("home.seasonSuffix")}`
+    : eyebrowKey && t(eyebrowKey);
 
   return (
     <section className="relative flex h-[600px] items-end overflow-hidden border-b border-border-subtle lg:h-[660px]">
-      {/* Placeholder for a full-bleed hero photograph (hockey action shot per the mockup).
-          HeroVisual is an entirely CSS/SVG abstract composition occupying the same box a real
-          <Image fill /> will later — swapping in a real photo requires no layout change here. */}
       <div className="absolute inset-0 bg-surface-base" />
+
       <HeroVisual />
-      <div className="absolute inset-0 bg-gradient-to-r from-surface-base via-surface-base/80 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-t from-surface-base via-transparent to-transparent" />
+
+      <div className="pointer-events-none absolute inset-0 w-full bg-gradient-to-r from-surface-base via-surface-base/60 to-transparent lg:w-[60%]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-surface-base to-transparent" />
 
       <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-5 px-6 pb-16">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">{eyebrowText}</p>
-        <h1 className="max-w-2xl font-display text-6xl font-bold uppercase leading-[1.08] tracking-normal text-foreground-primary lg:text-7xl">
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">
+          {eyebrowText}
+        </p>
+        <h1 className="max-w-2xl font-display text-5xl font-bold uppercase leading-[1.08] tracking-normal text-foreground-primary sm:text-6xl lg:text-7xl">
           {t(titleKey).split("\n").map((line) => (
             <span key={line} className="block">
               {line}
