@@ -34,7 +34,7 @@ export function Hero({ eyebrowKey, seasonYearRange, titleKey, taglineKey, cta }:
 
       <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-5 px-6 pb-16">
         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">{eyebrowText}</p>
-        <h1 className="max-w-2xl font-display text-6xl font-bold uppercase leading-[0.95] tracking-tight text-foreground-primary lg:text-7xl">
+        <h1 className="max-w-2xl font-display text-6xl font-bold uppercase leading-[1.08] tracking-normal text-foreground-primary lg:text-7xl">
           {t(titleKey).split("\n").map((line) => (
             <span key={line} className="block">
               {line}
