@@ -11,6 +11,7 @@ import { PartnersStrip } from "@/components/league/partners-strip";
 import { Card, CardContent } from "@/components/ui/card";
 import { T } from "@/components/ui/t";
 import type { TranslationKey } from "@/lib/i18n/dictionaries";
+import { SHOW_REGULATIONS } from "@/lib/regulations";
 
 export const revalidate = 60;
 
@@ -127,72 +128,74 @@ export default async function LeaguePage() {
         </div>
       </section>
 
-      {/* Official Regulations Section */}
-      <section id="regulations" className="border-t border-border-subtle bg-surface-base py-16">
-        <div className="mx-auto w-full max-w-7xl px-6">
-          <div className="flex flex-col gap-2">
-            <T
-              k="league.regulationsEyebrow"
-              as="p"
-              className="text-xs font-bold uppercase tracking-wider text-accent"
-            />
-            <T
-              k="league.regulationsTitle"
-              as="h2"
-              className="font-display text-3xl font-extrabold uppercase text-foreground-primary sm:text-4xl"
-            />
-            <T
-              k="league.regulationsDesc"
-              as="p"
-              className="max-w-2xl text-sm text-foreground-secondary"
-            />
-          </div>
-
-          <div className="mt-8 flex flex-col items-start justify-between gap-6 rounded-lg border border-border-subtle bg-surface-raised/50 p-6 sm:flex-row sm:items-center">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-border-subtle bg-surface-overlay text-accent">
-                <FileText className="h-6 w-6" aria-hidden="true" />
-              </div>
-              <div className="flex flex-col gap-0.5">
-                <T
-                  k="league.regulationsDocTitle"
-                  as="h3"
-                  className="font-semibold text-foreground-primary"
-                />
-                <T
-                  k="league.regulationsDocMeta"
-                  as="p"
-                  className="text-xs text-foreground-tertiary"
-                />
-              </div>
+      {/* Official Regulations Section — hidden while SHOW_REGULATIONS is false */}
+      {SHOW_REGULATIONS && (
+        <section id="regulations" className="border-t border-border-subtle bg-surface-base py-16">
+          <div className="mx-auto w-full max-w-7xl px-6">
+            <div className="flex flex-col gap-2">
+              <T
+                k="league.regulationsEyebrow"
+                as="p"
+                className="text-xs font-bold uppercase tracking-wider text-accent"
+              />
+              <T
+                k="league.regulationsTitle"
+                as="h2"
+                className="font-display text-3xl font-extrabold uppercase text-foreground-primary sm:text-4xl"
+              />
+              <T
+                k="league.regulationsDesc"
+                as="p"
+                className="max-w-2xl text-sm text-foreground-secondary"
+              />
             </div>
 
-            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-              <Button asChild variant="secondary" size="sm">
-                <a
-                  href="/documents/azhl-reqlament-2026-2027.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2"
-                >
-                  <ExternalLink className="h-4 w-4" />
-                  <span><T k="league.viewPdf" /></span>
-                </a>
-              </Button>
-              <Button asChild size="sm">
-                <a
-                  href="/documents/azhl-reqlament-2026-2027.pdf"
-                  download="AZHL_Reqlament_2026_2027.pdf"
-                  className="flex items-center gap-2"
-                >
-                  <Download className="h-4 w-4" />
-                  <span><T k="league.downloadPdf" /></span>
-                </a>
-              </Button>
+            <div className="mt-8 flex flex-col items-start justify-between gap-6 rounded-lg border border-border-subtle bg-surface-raised/50 p-6 sm:flex-row sm:items-center">
+              <div className="flex items-center gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-border-subtle bg-surface-overlay text-accent">
+                  <FileText className="h-6 w-6" aria-hidden="true" />
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <T
+                    k="league.regulationsDocTitle"
+                    as="h3"
+                    className="font-semibold text-foreground-primary"
+                  />
+                  <T
+                    k="league.regulationsDocMeta"
+                    as="p"
+                    className="text-xs text-foreground-tertiary"
+                  />
+                </div>
+              </div>
+
+              <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+                <Button asChild variant="secondary" size="sm">
+                  <a
+                    href="/documents/azhl-reqlament-2026-2027.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    <span><T k="league.viewPdf" /></span>
+                  </a>
+                </Button>
+                <Button asChild size="sm">
+                  <a
+                    href="/documents/azhl-reqlament-2026-2027.pdf"
+                    download="AZHL_Reqlament_2026_2027.pdf"
+                    className="flex items-center gap-2"
+                  >
+                    <Download className="h-4 w-4" />
+                    <span><T k="league.downloadPdf" /></span>
+                  </a>
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Partners */}
       <section id="partners" className="border-t border-border-subtle mx-auto w-full max-w-7xl scroll-mt-24 px-6 py-16">

@@ -6,12 +6,15 @@ import { Logo } from "@/components/ui/logo";
 import { LEAGUE_CONTACT } from "@/lib/league-contact";
 import { useTranslation } from "@/lib/i18n/use-translation";
 import type { TranslationKey } from "@/lib/i18n/dictionaries";
+import { SHOW_REGULATIONS } from "@/lib/regulations";
 
 const LEAGUE_LINKS: { href: string; labelKey: TranslationKey }[] = [
   { href: "/league", labelKey: "footer.aboutAzhl" },
   { href: "/teams", labelKey: "nav.teams" },
   { href: "/players", labelKey: "footer.players" },
-  { href: "/league#regulations", labelKey: "footer.regulations" },
+  ...(SHOW_REGULATIONS
+    ? [{ href: "/league#regulations", labelKey: "footer.regulations" as const }]
+    : []),
 ];
 
 const INFO_LINKS: { href: string; labelKey: TranslationKey }[] = [
