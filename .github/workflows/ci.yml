@@ -38,6 +38,10 @@ jobs:
           
 
       # Corepack installs the pnpm version pinned in package.json's packageManager field.
+            # Update Corepack to support current package manager signatures.
+      - name: Update Corepack
+        run: npm install --global corepack@latest
+
       - name: Enable Corepack
         run: corepack enable
 
